@@ -38,10 +38,10 @@
   .gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
   .gauge-pct{font-family:var(--mono);font-size:36px;font-weight:500;color:var(--text);line-height:1;}
   .gauge-label{font-size:11px;color:var(--text3);margin-top:4px;}
-  .gap-badge{margin-top:14px;padding:7px 18px;border-radius:999px;font-size:13px;font-weight:500;}
-  .gap-neg{background:rgba(255,95,109,0.12);color:var(--red);border:1px solid rgba(255,95,109,0.25);}
-  .gap-pos{background:rgba(74,222,154,0.1);color:var(--accent);border:1px solid rgba(74,222,154,0.25);}
-  .gap-zero{background:rgba(139,144,168,0.1);color:var(--text2);border:1px solid var(--border);}
+  .gap-badge{margin-top:14px;padding:7px 18px;border-radius999px;font-size:13px;font-weight:500;}
+  .gap-badge.gap-neg{background:rgba(255,95,109,0.12);color:var(--red);border:1px solid rgba(255,95,109,0.25);}
+  .gap-badge.gap-pos{background:rgba(74,222,154,0.1);color:var(--accent);border:1px solid rgba(74,222,154,0.25);}
+  .gap-badge.gap-zero{background:rgba(139,144,168,0.1);color:var(--text2);border:1px solid var(--border);}
   .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .metric-card{background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);}
   .metric-label{font-size:11px;color:var(--text3);margin-bottom:6px;}
@@ -55,6 +55,23 @@
   .legend-dot{width:10px;height:3px;border-radius:2px;}
   .legend-sq{width:10px;height:10px;border-radius:2px;}
   .chart-wrap{position:relative;height:240px;}
+  
+  /* 계좌 입력 폼 스타일 */
+  .account-group{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);margin-bottom:12px;}
+  .account-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+  .account-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .input-sub-box{display:flex;flex-direction:column;}
+  .input-sub-box label{font-size:11px;color:var(--text2);margin-bottom:4px;}
+  .number-input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-family:var(--mono);font-size:15px;color:var(--text);outline:none;transition:border-color .2s;}
+  .number-input:focus{border-color:var(--accent);}
+  .input-hint{font-size:10px;color:var(--text3);margin-top:4px;height:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  
+  /* 결과 창 전용 스타일 */
+  .calc-result-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;margin-top:14px;}
+  .calc-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;}
+  .calc-row .cr-label{color:var(--text2);}
+  .calc-row .cr-val{font-family:var(--mono);font-weight:500;}
+  
   .slider-card{background:var(--card);border-radius:var(--radius);padding:18px 16px;border:1px solid var(--border);margin-bottom:10px;}
   .slider-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
   .slider-name{font-size:13px;color:var(--text2);}
@@ -62,14 +79,9 @@
   input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:var(--bg);border-radius:2px;outline:none;}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--bg2);box-shadow:0 0 0 1px var(--accent2);transition:transform .15s;}
   input[type=range]::-webkit-slider-thumb:active{transform:scale(1.2);}
-  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--bg2);}
   .slider-minmax{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:5px;}
-  .input-card{background:var(--card);border-radius:var(--radius);padding:18px 16px;border:1px solid var(--border);margin-bottom:10px;}
-  .input-label{font-size:13px;color:var(--text2);margin-bottom:10px;display:block;}
-  .number-input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;font-family:var(--mono);font-size:20px;color:var(--text);outline:none;transition:border-color .2s;}
-  .number-input:focus{border-color:var(--accent);}
-  .input-hint{font-size:11px;color:var(--text3);margin-top:6px;}
-  .btn-primary{width:100%;padding:15px;background:var(--accent);color:#0a1a12;font-family:var(--font);font-size:15px;font-weight:700;border:none;border-radius:var(--radius);cursor:pointer;transition:background .15s,transform .1s;margin-top:6px;}
+  
+  .btn-primary{width:100%;padding:15px;background:var(--accent);color:#0a1a12;font-family:var(--font);font-size:15px;font-weight:700;border:none;border-radius:var(--radius);cursor:pointer;transition:background .15s,transform .1s;margin-top:12px;}
   .btn-primary:active{transform:scale(0.98);background:var(--accent2);}
   .btn-secondary{padding:7px 14px;background:var(--bg3);color:var(--text2);font-family:var(--font);font-size:12px;border:1px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;transition:background .15s;}
   .btn-secondary:hover{background:var(--card);}
@@ -80,6 +92,7 @@
   .result-sub{background:var(--bg3);border-radius:var(--radius-sm);padding:10px 12px;text-align:center;}
   .result-sub .rs-label{font-size:10px;color:var(--text3);margin-bottom:4px;}
   .result-sub .rs-val{font-family:var(--mono);font-size:13px;color:var(--text2);white-space:nowrap;}
+  
   .history-item{background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
   .hi-left .hi-date{font-size:12px;color:var(--text3);margin-bottom:5px;}
   .hi-left .hi-invest{font-family:var(--mono);font-size:15px;color:var(--text);}
@@ -96,6 +109,7 @@
   .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border2);border-radius:999px;padding:10px 22px;font-size:13px;color:var(--text);white-space:nowrap;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:200;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .no-goal-warn{background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--amber);margin-bottom:16px;}
+  
   .revised-info{background:rgba(91,143,255,0.08);border:1px solid rgba(91,143,255,0.2);border-radius:var(--radius);padding:14px 16px;margin-top:10px;}
   .revised-info .ri-title{font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;}
   .revised-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;}
@@ -190,21 +204,70 @@
       </div>
     </div>
 
-    <div class="section-title">추가 투자금</div>
-    <div class="slider-card">
-      <div class="slider-header">
-        <span class="slider-name">추가 투자금</span>
-        <span class="slider-val" id="invest-display">0원</span>
+    <div class="section-title">3개 계좌 잔고 및 추가 투자금 입력</div>
+    
+    <div class="account-group">
+      <div class="account-title">💳 토스</div>
+      <div class="account-row">
+        <div class="input-sub-box">
+          <label>이번 달 최종 잔고 (원)</label>
+          <input type="number" class="number-input ac-asset" id="ac1-asset" placeholder="예: 50000000" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac1-asset-hint">0원</div>
+        </div>
+        <div class="input-sub-box">
+          <label>이번 달 저축·입금액 (원)</label>
+          <input type="number" class="number-input ac-invest" id="ac1-invest" placeholder="없으면 0" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac1-invest-hint">0원</div>
+        </div>
       </div>
-      <input type="range" id="invest-slider" min="0" max="50" step="1" value="0" oninput="updateInvestDisplay(this.value)">
-      <div class="slider-minmax"><span>0원</span><span>500만원</span></div>
     </div>
 
-    <div class="section-title">실제 수익률</div>
-    <div class="input-card">
-      <label class="input-label" for="return-input">수익률 입력 (%)</label>
-      <input type="number" class="number-input" id="return-input" placeholder="예: 3.5 또는 -2.1" step="0.1">
-      <div class="input-hint">음수 입력 가능 · 소수점 한 자리까지</div>
+    <div class="account-group">
+      <div class="account-title">💳 한투</div>
+      <div class="account-row">
+        <div class="input-sub-box">
+          <label>이번 달 최종 잔고 (원)</label>
+          <input type="number" class="number-input ac-asset" id="ac2-asset" placeholder="예: 30000000" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac2-asset-hint">0원</div>
+        </div>
+        <div class="input-sub-box">
+          <label>이번 달 저축·입금액 (원)</label>
+          <input type="number" class="number-input ac-invest" id="ac2-invest" placeholder="없으면 0" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac2-invest-hint">0원</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="account-group">
+      <div class="account-title">💳 미래</div>
+      <div class="account-row">
+        <div class="input-sub-box">
+          <label>이번 달 최종 잔고 (원)</label>
+          <input type="number" class="number-input ac-asset" id="ac3-asset" placeholder="예: 20000000" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac3-asset-hint">0원</div>
+        </div>
+        <div class="input-sub-box">
+          <label>이번 달 저축·입금액 (원)</label>
+          <input type="number" class="number-input ac-invest" id="ac3-invest" placeholder="없으면 0" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac3-invest-hint">0원</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">📊 이번 달 계산 결과 (자동)</div>
+    <div class="calc-result-box">
+      <div class="calc-row">
+        <span class="cr-label">총 합산 자산 금액</span>
+        <span class="cr-val" id="res-total-asset" style="color:var(--text);">0원</span>
+      </div>
+      <div class="calc-row">
+        <span class="cr-label">총 추가 투자금 (합산)</span>
+        <span class="cr-val" id="res-total-invest" style="color:var(--blue);">0원</span>
+      </div>
+      <div class="calc-row" style="margin-top:4px; padding-top:10px; border-top:1px solid var(--border);">
+        <span class="cr-label" style="font-weight:700;">역산된 실제 수익률</span>
+        <span class="cr-val" id="res-calc-rate" style="color:var(--accent); font-size:16px; font-weight:700;">0.0%</span>
+      </div>
     </div>
 
     <button class="btn-primary" onclick="saveMonthData()">💾 저장하기</button>
@@ -282,12 +345,10 @@ let chartObj=null;
 function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{goal:null,months:[]};}catch(e){return{goal:null,months:[]};}}
 function save(data){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}}
 
-// 대시보드 표시용 원 단위 무조건 콤마 표기 함수
 function fmtExactRaw(n) {
   return Math.round(n).toLocaleString() + '원';
 }
 
-// 툴팁 및 목표값 설정용 한글 단위 결합 함수
 function fmtKoreanUnit(n) {
   n = Math.round(n);
   if (n >= 100000000) {
@@ -307,7 +368,6 @@ function fmtPeriod(months){
   return mo+'개월';
 }
 
-// 교차점 날짜 포맷 함수 (예: 2027년 6월 -> 27.6월)
 function fmtShortDate(dateStr) {
   if(!dateStr) return '';
   const match = dateStr.match(/(\d{2})(\d{2})년\s*(\d+)월/);
@@ -354,16 +414,17 @@ function switchTab(name,btn){
 
 function resetInputForm(){
   initDateSelects();
-  document.getElementById('invest-slider').value=0;
-  updateInvestDisplay(0);
-  document.getElementById('return-input').value='';
+  ['ac1','ac2','ac3'].forEach(id => {
+    document.getElementById(id+'-asset').value = '';
+    document.getElementById(id+'-invest').value = '';
+    document.getElementById(id+'-asset-hint').textContent = '0원';
+    document.getElementById(id+'-invest-hint').textContent = '0원';
+  });
+  document.getElementById('res-total-asset').textContent = '0원';
+  document.getElementById('res-total-invest').textContent = '0원';
+  document.getElementById('res-calc-rate').textContent = '0.0%';
   document.getElementById('edit-notice').style.display='none';
   editingIndex=-1;
-}
-
-function updateInvestDisplay(v){
-  const w=parseInt(v)*10;
-  document.getElementById('invest-display').textContent=w===0?'0원':w+'만원';
 }
 
 function updateGoalDisplay(){
@@ -400,27 +461,138 @@ function saveGoal(){
   switchTab('dashboard',document.querySelector('.tab-btn'));
 }
 
+function getPreviousAssetAmount(data, targetIdx) {
+  const goal = data.goal;
+  let cur = goal.capital;
+  for(let i=0; i<targetIdx; i++) {
+    const m = data.months[i];
+    cur = cur * (1 + m.rate/100) + m.invest;
+  }
+  return cur;
+}
+
+// 💡 실시간으로 3개 계좌 값을 읽어서 힌트와 결과창 수익률을 실시간 계산해주는 핵심 로직
+function liveRecalculate() {
+  const data = load();
+  if(!data.goal) return;
+
+  let totalAsset = 0;
+  let totalInvest = 0;
+
+  ['ac1', 'ac2', 'ac3'].forEach(id => {
+    const assetVal = parseFloat(document.getElementById(id+'-asset').value) || 0;
+    const investVal = parseFloat(document.getElementById(id+'-invest').value) || 0;
+    
+    document.getElementById(id+'-asset-hint').textContent = assetVal > 0 ? fmtKoreanUnit(assetVal) : '0원';
+    document.getElementById(id+'-invest-hint').textContent = investVal > 0 ? fmtKoreanUnit(investVal) : '0원';
+    
+    totalAsset += assetVal;
+    totalInvest += investVal;
+  });
+
+  document.getElementById('res-total-asset').textContent = fmtExactRaw(totalAsset);
+  document.getElementById('res-total-invest').textContent = fmtExactRaw(totalInvest);
+
+  // 현재 가상 인덱스 파악
+  const year = parseInt(document.getElementById('sel-year').value);
+  const month = parseInt(document.getElementById('sel-month').value);
+  
+  // 현재 입력중인 날짜가 들어갈 자리 추적하기 위해 임시 정렬
+  let monthsCopy = [...data.months];
+  let currentIdx = editingIndex;
+  
+  if(currentIdx < 0) {
+    let existIdx = monthsCopy.findIndex(m => m.year === year && m.month === month);
+    if(existIdx >= 0) {
+      currentIdx = existIdx;
+    } else {
+      monthsCopy.push({year, month});
+      monthsCopy.sort((a,b)=>a.year!==b.year?a.year-b.year:a.month-b.month);
+      currentIdx = monthsCopy.findIndex(m => m.year === year && m.month === month);
+    }
+  }
+
+  const prevAsset = getPreviousAssetAmount(data, currentIdx);
+  
+  let rate = 0;
+  if(prevAsset > 0 && totalAsset > 0) {
+    rate = ((totalAsset - totalInvest) / prevAsset - 1) * 100;
+  }
+  
+  const rateEl = document.getElementById('res-calc-rate');
+  rateEl.textContent = (rate >= 0 ? '+' : '') + rate.toFixed(1) + '%';
+  rateEl.style.color = rate > 0 ? 'var(--accent)' : (rate < 0 ? 'var(--red)' : 'var(--text3)');
+}
+
+// 년/월 셀렉트 박스 바꿨을 때도 수익률 실시간 재계산 연동
+document.getElementById('sel-year').addEventListener('change', liveRecalculate);
+document.getElementById('sel-month').addEventListener('change', liveRecalculate);
+
 function saveMonthData(){
+  const data=load();
+  if(!data.goal){showToast('⚠️ 목표 설정을 먼저 완료해 주세요.'); return;}
+
   const year=parseInt(document.getElementById('sel-year').value);
   const month=parseInt(document.getElementById('sel-month').value);
-  const sv=parseInt(document.getElementById('invest-slider').value);
-  const invest=sv*10*10000;
-  const rateVal=document.getElementById('return-input').value;
-  if(rateVal===''){showToast('⚠️ 수익률을 입력해 주세요');return;}
-  const rate=parseFloat(rateVal);
+  
+  // 3개 계좌 수집
+  const ac1Asset = parseFloat(document.getElementById('ac1-asset').value) || 0;
+  const ac1Invest = parseFloat(document.getElementById('ac1-invest').value) || 0;
+  const ac2Asset = parseFloat(document.getElementById('ac2-asset').value) || 0;
+  const ac2Invest = parseFloat(document.getElementById('ac2-invest').value) || 0;
+  const ac3Asset = parseFloat(document.getElementById('ac3-asset').value) || 0;
+  const ac3Invest = parseFloat(document.getElementById('ac3-invest').value) || 0;
+
+  const finalAsset = ac1Asset + ac2Asset + ac3Asset;
+  const invest = ac1Invest + ac2Invest + ac3Invest;
+  
+  if(finalAsset === 0){showToast('⚠️ 최소 한 개 계좌의 잔고를 입력해 주세요'); return;}
+  
   const dateStr=year+'년 '+month+'월';
-  const entry={date:dateStr,year,month,ts:Date.now(),invest,rate};
-  const data=load();
-  if(editingIndex>=0){
-    data.months[editingIndex]=entry;
-    editingIndex=-1;
-    document.getElementById('edit-notice').style.display='none';
-  }else{
-    data.months.push(entry);
-    data.months.sort((a,b)=>a.year!==b.year?a.year-b.year:a.month-b.month);
+  
+  let tempEntry={
+    date:dateStr,year,month,ts:Date.now(),
+    invest, rate:0, finalAsset,
+    breakdown: { ac1Asset, ac1Invest, ac2Asset, ac2Invest, ac3Asset, ac3Invest }
+  };
+  
+  let targetIdx = editingIndex;
+  if(targetIdx >= 0) {
+    data.months[targetIdx] = tempEntry;
+  } else {
+    data.months.push(tempEntry);
   }
+  
+  data.months.sort((a,b)=>a.year!==b.year?a.year-b.year:a.month-b.month);
+  
+  if(targetIdx < 0) {
+    targetIdx = data.months.findIndex(m => m.year === year && m.month === month);
+  }
+
+  const prevAsset = getPreviousAssetAmount(data, targetIdx);
+  let calculatedRate = 0;
+  if(prevAsset > 0) {
+    calculatedRate = ((finalAsset - invest) / prevAsset - 1) * 100;
+  }
+  
+  data.months[targetIdx].rate = Math.round(calculatedRate * 10) / 10;
+  
+  // 중간 연도 수정 시 뒷단 자동 연쇄 계산
+  if(editingIndex >= 0) {
+    for(let i = targetIdx + 1; i < data.months.length; i++) {
+      let pAs = getPreviousAssetAmount(data, i);
+      if(pAs > 0) {
+        let r = ((data.months[i].finalAsset - data.months[i].invest) / pAs - 1) * 100;
+        data.months[i].rate = Math.round(r * 10) / 10;
+      }
+    }
+  }
+
+  editingIndex=-1;
+  document.getElementById('edit-notice').style.display='none';
+  
   save(data);
-  showToast('✅ 저장되었습니다');
+  showToast('✅ 분할 계좌 기록이 정상 저장되었습니다');
   switchTab('dashboard',document.querySelector('.tab-btn'));
 }
 
@@ -429,21 +601,41 @@ function editEntry(idx){
   const entry=data.months[idx];
   editingIndex=idx;
   initDateSelects();
-  document.getElementById('sel-year').value=entry.year||(new Date().getFullYear());
-  document.getElementById('sel-month').value=entry.month||(new Date().getMonth()+1);
-  const sv=Math.round(entry.invest/10000/10);
-  document.getElementById('invest-slider').value=sv;
-  updateInvestDisplay(sv);
-  document.getElementById('return-input').value=entry.rate;
+  
+  document.getElementById('sel-year').value=entry.year;
+  document.getElementById('sel-month').value=entry.month;
+  
+  const b = entry.breakdown || {
+    ac1Asset: entry.finalAsset, ac1Invest: entry.invest,
+    ac2Asset: 0, ac2Invest: 0, ac3Asset: 0, ac3Invest: 0
+  };
+
+  document.getElementById('ac1-asset').value = b.ac1Asset || '';
+  document.getElementById('ac1-invest').value = b.ac1Invest || '';
+  document.getElementById('ac2-asset').value = b.ac2Asset || '';
+  document.getElementById('ac2-invest').value = b.ac2Invest || '';
+  document.getElementById('ac3-asset').value = b.ac3Asset || '';
+  document.getElementById('ac3-invest').value = b.ac3Invest || '';
+  
   document.getElementById('edit-notice').style.display='block';
   const inputBtn=document.querySelectorAll('.tab-btn')[1];
   switchTab('input',inputBtn);
+  liveRecalculate();
 }
 
 function deleteEntry(idx){
   if(!confirm('이 기록을 삭제할까요?'))return;
   const data=load();
   data.months.splice(idx,1);
+  
+  for(let i = idx; i < data.months.length; i++) {
+    let pAs = getPreviousAssetAmount(data, i);
+    if(pAs > 0 && data.months[i].finalAsset) {
+      let r = ((data.months[i].finalAsset - data.months[i].invest) / pAs - 1) * 100;
+      data.months[i].rate = Math.round(r * 10) / 10;
+    }
+  }
+  
   save(data);
   renderHistory();
   showToast('🗑️ 삭제되었습니다');
@@ -453,14 +645,17 @@ function computeOrigPath(goal){
   const pts=[goal.capital];
   const mr=goal.rate/100/12;
   let cur=goal.capital;
-  for(let i=0;i<goal.months;i++){cur=cur*(1+mr)+goal.monthly;pts.push(Math.round(cur));}
+  for(let i=0; i<goal.months; i++){cur=cur*(1+mr)+goal.monthly;pts.push(Math.round(cur));}
   return pts;
 }
 
 function computeActualPath(goal,months){
   const pts=[goal.capital];
   let cur=goal.capital;
-  months.forEach(m=>{cur=cur*(1+m.rate/100)+m.invest;pts.push(Math.round(cur));});
+  months.forEach(m=>{
+    cur=cur*(1+m.rate/100)+m.invest;
+    pts.push(Math.round(cur));
+  });
   return pts;
 }
 
@@ -518,7 +713,6 @@ function renderDashboard(){
     gapEl.className='gap-badge gap-neg';
   }
 
-  // 1번 요청 반영: 무조건 원 단위 전체 숫자로 표기
   document.getElementById('dash-current').textContent=fmtExactRaw(current);
   document.getElementById('dash-orig').textContent=fmtExactRaw(origTarget);
   document.getElementById('dash-invested').textContent=fmtExactRaw(totalInvested);
@@ -549,12 +743,10 @@ function renderDashboard(){
     document.getElementById('revised-info').style.display='none';
   }
 
-  // 데이터 경로 구축
   const origPath=computeOrigPath(goal);
   const actualData=new Array(goal.months+1).fill(null);
   actual.forEach((v,i)=>{actualData[i]=v;});
 
-  // 날짜 매핑 레이블 생성
   const labels=[];
   const baseDate = months.length > 0 ? new Date(months[0].year, months[0].month - 1) : new Date();
   
@@ -563,7 +755,6 @@ function renderDashboard(){
     let labelStr = targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월';
     if(i===0) labelStr = '시작';
     
-    // 💡 X축 메인 격자 축약 노출 조건
     if(i===0){labels.push('시작');}
     else if(goal.months<=24){labels.push(i%3===0? fmtShortDate(labelStr) : '');}
     else{labels.push(i%12===0? targetDate.getFullYear()+'년' : '');}
@@ -583,7 +774,7 @@ function renderDashboard(){
     },
     options:{
       responsive:true,maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false}, // Cross 시각화를 위해 인덱스 기준 교차 활성화
+      interaction:{mode:'index',intersect:false},
       plugins:{
         legend:{display:false},
         tooltip:{
@@ -595,13 +786,10 @@ function renderDashboard(){
           borderWidth:1,
           padding:12,
           callbacks:{
-            // 3번 요청 반영: 교차 지점에 날짜 / 목표 / 실제 / 차액 / 달성률 연동 안내창 커스터마이징
             title: function(context) {
               const idx = context[0].dataIndex;
               if(idx === 0) return '🏁 투자 시작 시점';
-              if(months[idx-1]) {
-                return '📅 ' + fmtShortDate(months[idx-1].date);
-              }
+              if(months[idx-1]) return '📅 ' + fmtShortDate(months[idx-1].date);
               let targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + (idx - 1));
               return '📅 ' + fmtShortDate(targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월');
             },
@@ -638,16 +826,10 @@ function renderDashboard(){
           ticks:{
             color:'#555a72',
             font:{size:10},
-            // 2번 요청 반영: 5000만이 아니라 '5천만', '1억' 단위 매핑 처리
             callback: function(value) {
               if (value === 0) return '0';
-              if (value >= 100000000) {
-                const eok = value / 100000000;
-                return eok.toFixed(1).replace('.0', '') + '억';
-              }
-              if (value >= 10000) {
-                return (value / 10000).toLocaleString() + '만';
-              }
+              if (value >= 100000000) return (value / 100000000).toFixed(1).replace('.0', '') + '억';
+              if (value >= 10000) return (value / 10000).toLocaleString() + '만';
               return value;
             }
           }
@@ -674,7 +856,7 @@ function renderHistory(){
         <div class="hi-invest">${m.invest===0?'추가 납입 없음':'+'+fmtExactRaw(m.invest)}</div>
       </div>
       <div class="hi-right">
-        <div class="hi-rate ${rc}">${rs}${m.rate}%</div>
+        <div class="hi-rate ${rc}">${rs}${m.rate.toFixed(1)}%</div>
         <div class="hi-actions">
           <button class="btn-secondary" onclick="editEntry(${idx})">✏️ 수정</button>
           <button class="btn-secondary" onclick="deleteEntry(${idx})">🗑️</button>
