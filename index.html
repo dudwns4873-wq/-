@@ -45,7 +45,7 @@
   .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .metric-card{background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);}
   .metric-label{font-size:11px;color:var(--text3);margin-bottom:6px;}
-  .metric-val{font-family:var(--mono);font-size:17px;font-weight:500;color:var(--text);}
+  .metric-val{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--text);white-space:nowrap;}
   .metric-val.accent{color:var(--accent);}
   .metric-val.amber{color:var(--amber);}
   .metric-val.blue{color:var(--blue);}
@@ -54,7 +54,7 @@
   .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
   .legend-dot{width:10px;height:3px;border-radius:2px;}
   .legend-sq{width:10px;height:10px;border-radius:2px;}
-  .chart-wrap{position:relative;height:200px;}
+  .chart-wrap{position:relative;height:240px;}
   .slider-card{background:var(--card);border-radius:var(--radius);padding:18px 16px;border:1px solid var(--border);margin-bottom:10px;}
   .slider-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
   .slider-name{font-size:13px;color:var(--text2);}
@@ -73,18 +73,16 @@
   .btn-primary:active{transform:scale(0.98);background:var(--accent2);}
   .btn-secondary{padding:7px 14px;background:var(--bg3);color:var(--text2);font-family:var(--font);font-size:12px;border:1px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;transition:background .15s;}
   .btn-secondary:hover{background:var(--card);}
-  .btn-sim{width:100%;padding:13px;background:rgba(91,143,255,0.12);color:var(--blue);font-family:var(--font);font-size:14px;font-weight:700;border:1px solid rgba(91,143,255,0.3);border-radius:var(--radius);cursor:pointer;transition:background .15s;margin-top:8px;}
-  .btn-sim:active{background:rgba(91,143,255,0.22);}
   .result-banner{background:linear-gradient(135deg,rgba(74,222,154,0.08),rgba(91,143,255,0.08));border:1px solid rgba(74,222,154,0.2);border-radius:var(--radius);padding:18px;margin-top:10px;text-align:center;}
   .result-banner .rb-label{font-size:12px;color:var(--text3);margin-bottom:6px;}
-  .result-banner .rb-val{font-family:var(--mono);font-size:28px;font-weight:500;color:var(--accent);}
+  .result-banner .rb-val{font-family:var(--mono);font-size:24px;font-weight:500;color:var(--accent);}
   .result-sub-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
   .result-sub{background:var(--bg3);border-radius:var(--radius-sm);padding:10px 12px;text-align:center;}
   .result-sub .rs-label{font-size:10px;color:var(--text3);margin-bottom:4px;}
-  .result-sub .rs-val{font-family:var(--mono);font-size:14px;color:var(--text2);}
+  .result-sub .rs-val{font-family:var(--mono);font-size:13px;color:var(--text2);white-space:nowrap;}
   .history-item{background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
   .hi-left .hi-date{font-size:12px;color:var(--text3);margin-bottom:5px;}
-  .hi-left .hi-invest{font-family:var(--mono);font-size:16px;color:var(--text);}
+  .hi-left .hi-invest{font-family:var(--mono);font-size:15px;color:var(--text);}
   .hi-right{text-align:right;}
   .hi-rate{font-family:var(--mono);font-size:18px;font-weight:500;}
   .hi-rate.pos{color:var(--accent);}
@@ -92,7 +90,6 @@
   .hi-rate.zero{color:var(--text3);}
   .hi-actions{display:flex;gap:6px;margin-top:6px;justify-content:flex-end;}
   .edit-notice{background:rgba(91,143,255,0.1);border:1px solid rgba(91,143,255,0.25);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:12px;display:none;}
-  .sim-notice{background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.25);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--amber);margin-bottom:12px;display:none;}
   .empty-state{text-align:center;padding:48px 20px;color:var(--text3);}
   .empty-state svg{width:40px;height:40px;stroke:var(--text3);fill:none;stroke-width:1.5;margin-bottom:12px;}
   .empty-state p{font-size:14px;line-height:1.6;}
@@ -104,9 +101,9 @@
   .revised-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;}
   .revised-row .rr-label{font-size:13px;color:var(--text2);}
   .revised-row .rr-val{font-family:var(--mono);font-size:14px;color:var(--blue);}
-  .date-select-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
-  select.date-select{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-family:var(--mono);font-size:15px;color:var(--text);outline:none;width:100%;-webkit-appearance:none;appearance:none;cursor:pointer;}
-  select.date-select:focus{border-color:var(--accent);}
+  .date-select-wrap { display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:10px; }
+  select.date-select { background:var(--bg); border:1px solid var(--border2); border-radius:var(--radius-sm); padding:10px 12px; font-family:var(--font); font-size:15px; color:var(--text); outline:none; width:100%; -webkit-appearance:none; appearance:none; cursor:pointer; }
+  select.date-select:focus { border-color:var(--accent); }
 </style>
 </head>
 <body>
@@ -118,7 +115,6 @@
     </div>
   </div>
 
-  <!-- 대시보드 -->
   <div class="page active" id="page-dashboard">
     <div id="no-goal-warn" class="no-goal-warn" style="display:none;margin-top:16px;">⚙️ 목표 탭에서 먼저 초기 목표를 설정해 주세요.</div>
     <div class="gauge-wrap">
@@ -155,7 +151,6 @@
       </div>
     </div>
 
-    <!-- 수정 목표 (기간 기준) -->
     <div class="revised-info" id="revised-info" style="display:none;">
       <div class="ri-title">📅 수정 목표 (기간 재계산)</div>
       <div class="revised-row">
@@ -184,10 +179,8 @@
     </div>
   </div>
 
-  <!-- 월 데이터 입력 -->
   <div class="page" id="page-input">
     <div class="edit-notice" id="edit-notice">✏️ 이전 기록을 수정 중입니다</div>
-    <div class="sim-notice" id="sim-notice">🔮 시뮬레이션 모드 — 저장해도 실제 데이터에 반영됩니다</div>
 
     <div class="section-title" style="margin-top:4px;">날짜 선택</div>
     <div class="input-card">
@@ -215,10 +208,8 @@
     </div>
 
     <button class="btn-primary" onclick="saveMonthData()">💾 저장하기</button>
-    <button class="btn-sim" onclick="previewSimulation()">🔮 저장 전 대시보드 미리보기</button>
   </div>
 
-  <!-- 목표 설정 -->
   <div class="page" id="page-goal">
     <div class="section-title" style="margin-top:4px;">목표 파라미터</div>
     <div class="slider-card">
@@ -252,7 +243,6 @@
     <button class="btn-primary" onclick="saveGoal()" style="margin-top:14px;">목표 저장하기</button>
   </div>
 
-  <!-- 기록 -->
   <div class="page" id="page-history">
     <div class="section-title" style="margin-top:4px;">월별 기록</div>
     <div id="history-empty" class="empty-state">
@@ -288,17 +278,25 @@
 const STORAGE_KEY='invest_tracker_v2';
 let editingIndex=-1;
 let chartObj=null;
-let simMode=false;
 
 function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{goal:null,months:[]};}catch(e){return{goal:null,months:[]};}}
 function save(data){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}}
 
-function fmt(n){
-  n=Math.round(n);
-  if(n>=100000000)return(n/100000000).toFixed(2).replace(/\.?0+$/,'')+'억원';
-  if(n>=10000000)return(n/10000000).toFixed(1).replace(/\.0$/,'')+'천만원';
-  if(n>=10000)return Math.round(n/10000)+'만원';
-  return n.toLocaleString()+'원';
+// 대시보드 표시용 원 단위 무조건 콤마 표기 함수
+function fmtExactRaw(n) {
+  return Math.round(n).toLocaleString() + '원';
+}
+
+// 툴팁 및 목표값 설정용 한글 단위 결합 함수
+function fmtKoreanUnit(n) {
+  n = Math.round(n);
+  if (n >= 100000000) {
+    const eok = Math.floor(n / 100000000);
+    const remain = Math.round((n % 100000000) / 10000);
+    return eok + '억' + (remain > 0 ? ' ' + remain.toLocaleString() + '만' : '') + '원';
+  }
+  if (n >= 10000) return Math.round(n / 10000).toLocaleString() + '만원';
+  return n.toLocaleString() + '원';
 }
 
 function fmtPeriod(months){
@@ -307,6 +305,14 @@ function fmtPeriod(months){
   if(yr>0&&mo>0)return yr+'년 '+mo+'개월';
   if(yr>0)return yr+'년';
   return mo+'개월';
+}
+
+// 교차점 날짜 포맷 함수 (예: 2027년 6월 -> 27.6월)
+function fmtShortDate(dateStr) {
+  if(!dateStr) return '';
+  const match = dateStr.match(/(\d{2})(\d{2})년\s*(\d+)월/);
+  if(match) return match[2] + '.' + match[3] + '월';
+  return dateStr.replace('년 ', '.').replace('월', '월');
 }
 
 function showToast(msg){
@@ -342,7 +348,7 @@ function switchTab(name,btn){
   if(btn)btn.classList.add('active');
   if(name==='dashboard')renderDashboard();
   if(name==='history')renderHistory();
-  if(name==='input'&&editingIndex<0&&!simMode){resetInputForm();}
+  if(name==='input'&&editingIndex<0){resetInputForm();}
   window.scrollTo(0,0);
 }
 
@@ -352,8 +358,7 @@ function resetInputForm(){
   updateInvestDisplay(0);
   document.getElementById('return-input').value='';
   document.getElementById('edit-notice').style.display='none';
-  document.getElementById('sim-notice').style.display='none';
-  editingIndex=-1;simMode=false;
+  editingIndex=-1;
 }
 
 function updateInvestDisplay(v){
@@ -366,8 +371,8 @@ function updateGoalDisplay(){
   const monthly=parseInt(document.getElementById('g-monthly').value)*10*10000;
   const rate=parseInt(document.getElementById('g-rate').value)/10;
   const months=parseInt(document.getElementById('g-period').value);
-  document.getElementById('g-capital-display').textContent=fmt(capital);
-  document.getElementById('g-monthly-display').textContent=monthly===0?'0원':fmt(monthly);
+  document.getElementById('g-capital-display').textContent=fmtKoreanUnit(capital);
+  document.getElementById('g-monthly-display').textContent=monthly===0?'0원':fmtKoreanUnit(monthly);
   document.getElementById('g-rate-display').textContent=rate.toFixed(1)+'%';
   document.getElementById('g-period-display').textContent=fmtPeriod(months);
   const mr=rate/100/12;
@@ -375,9 +380,9 @@ function updateGoalDisplay(){
   for(let i=0;i<months;i++)total=total*(1+mr)+monthly;
   total=Math.round(total);
   const invested=capital+monthly*months;
-  document.getElementById('g-result').textContent=fmt(total);
-  document.getElementById('g-total-invest').textContent=fmt(invested);
-  document.getElementById('g-profit').textContent=fmt(total-invested);
+  document.getElementById('g-result').textContent=fmtKoreanUnit(total);
+  document.getElementById('g-total-invest').textContent=fmtKoreanUnit(invested);
+  document.getElementById('g-profit').textContent=fmtKoreanUnit(total-invested);
 }
 
 function saveGoal(){
@@ -415,33 +420,14 @@ function saveMonthData(){
     data.months.sort((a,b)=>a.year!==b.year?a.year-b.year:a.month-b.month);
   }
   save(data);
-  simMode=false;
   showToast('✅ 저장되었습니다');
   switchTab('dashboard',document.querySelector('.tab-btn'));
-}
-
-function previewSimulation(){
-  const year=parseInt(document.getElementById('sel-year').value);
-  const month=parseInt(document.getElementById('sel-month').value);
-  const sv=parseInt(document.getElementById('invest-slider').value);
-  const invest=sv*10*10000;
-  const rateVal=document.getElementById('return-input').value;
-  if(rateVal===''){showToast('⚠️ 수익률을 입력해 주세요');return;}
-  const rate=parseFloat(rateVal);
-  const dateStr=year+'년 '+month+'월';
-  const simEntry={date:dateStr,year,month,ts:Date.now(),invest,rate,isSim:true};
-  // 대시보드로 이동해서 시뮬레이션 결과 보여줌
-  const dashBtn=document.querySelector('.tab-btn');
-  switchTab('dashboard',dashBtn);
-  renderDashboard(simEntry);
-  showToast('🔮 시뮬레이션 미리보기 중');
 }
 
 function editEntry(idx){
   const data=load();
   const entry=data.months[idx];
   editingIndex=idx;
-  // 날짜 세팅
   initDateSelects();
   document.getElementById('sel-year').value=entry.year||(new Date().getFullYear());
   document.getElementById('sel-month').value=entry.month||(new Date().getMonth()+1);
@@ -450,8 +436,6 @@ function editEntry(idx){
   updateInvestDisplay(sv);
   document.getElementById('return-input').value=entry.rate;
   document.getElementById('edit-notice').style.display='block';
-  document.getElementById('sim-notice').style.display='none';
-  simMode=false;
   const inputBtn=document.querySelectorAll('.tab-btn')[1];
   switchTab('input',inputBtn);
 }
@@ -480,7 +464,6 @@ function computeActualPath(goal,months){
   return pts;
 }
 
-// 현재 자산으로 목표 금액 달성까지 몇 개월 걸리는지 계산
 function computeRevisedMonths(goal,currentAsset){
   const mr=goal.rate/100/12;
   const target=goal.target;
@@ -494,16 +477,10 @@ function computeRevisedMonths(goal,currentAsset){
   return m;
 }
 
-function renderDashboard(simEntry){
+function renderDashboard(){
   const data=load();
   const goal=data.goal;
   let months=[...(data.months||[])];
-
-  // 시뮬레이션 엔트리 임시 추가
-  if(simEntry){
-    months=[...months,simEntry];
-    months.sort((a,b)=>a.year!==b.year?a.year-b.year:a.month-b.month);
-  }
 
   document.getElementById('no-goal-warn').style.display=goal?'none':'block';
 
@@ -516,12 +493,10 @@ function renderDashboard(simEntry){
     return;
   }
 
-  const yr=Math.floor(goal.months/12),mo=goal.months%12;
   document.getElementById('header-sub').textContent='목표 '+fmtPeriod(goal.months)+' · '+goal.rate.toFixed(1)+'% 수익률';
 
   const actual=computeActualPath(goal,months);
   const current=actual[actual.length-1];
-  // 총 납입금 = 초기자본 + 실제 납입한 금액만 (수익 제외)
   const totalInvested=goal.capital+months.reduce((s,m)=>s+m.invest,0);
   const profit=current-totalInvested;
   const origTarget=goal.target;
@@ -539,17 +514,17 @@ function renderDashboard(simEntry){
     gapEl.textContent='목표 금액 달성! 🎉';
     gapEl.className='gap-badge gap-pos';
   }else{
-    gapEl.textContent='목표까지 '+fmt(Math.abs(gap))+' 남음';
+    gapEl.textContent='목표까지 '+fmtExactRaw(Math.abs(gap))+' 남음';
     gapEl.className='gap-badge gap-neg';
   }
 
-  document.getElementById('dash-current').textContent=fmt(current);
-  document.getElementById('dash-orig').textContent=fmt(origTarget);
-  document.getElementById('dash-invested').textContent=fmt(totalInvested);
-  document.getElementById('dash-profit').textContent=(profit>=0?'+':'')+fmt(profit);
+  // 1번 요청 반영: 무조건 원 단위 전체 숫자로 표기
+  document.getElementById('dash-current').textContent=fmtExactRaw(current);
+  document.getElementById('dash-orig').textContent=fmtExactRaw(origTarget);
+  document.getElementById('dash-invested').textContent=fmtExactRaw(totalInvested);
+  document.getElementById('dash-profit').textContent=(profit>=0?'+':'')+fmtExactRaw(profit);
   document.getElementById('dash-profit').className='metric-val'+(profit>=0?' amber':' ');
 
-  // 수정 목표: 기간 재계산
   if(months.length>0){
     document.getElementById('revised-info').style.display='block';
     const revisedM=computeRevisedMonths(goal,current);
@@ -574,43 +549,112 @@ function renderDashboard(simEntry){
     document.getElementById('revised-info').style.display='none';
   }
 
-  // Chart
+  // 데이터 경로 구축
   const origPath=computeOrigPath(goal);
   const actualData=new Array(goal.months+1).fill(null);
   actual.forEach((v,i)=>{actualData[i]=v;});
 
+  // 날짜 매핑 레이블 생성
   const labels=[];
+  const baseDate = months.length > 0 ? new Date(months[0].year, months[0].month - 1) : new Date();
+  
   for(let i=0;i<=goal.months;i++){
-    if(i===0){labels.push('시작');continue;}
-    if(goal.months<=24){labels.push(i%3===0?i+'개월':'');}
-    else{labels.push(i%12===0?(i/12)+'년':'');}
+    let targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + (i - 1));
+    let labelStr = targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월';
+    if(i===0) labelStr = '시작';
+    
+    // 💡 X축 메인 격자 축약 노출 조건
+    if(i===0){labels.push('시작');}
+    else if(goal.months<=24){labels.push(i%3===0? fmtShortDate(labelStr) : '');}
+    else{labels.push(i%12===0? targetDate.getFullYear()+'년' : '');}
   }
 
   if(chartObj){chartObj.destroy();chartObj=null;}
   const ctx=document.getElementById('mainChart').getContext('2d');
+  
   chartObj=new Chart(ctx,{
     type:'bar',
     data:{
       labels,
       datasets:[
-        {type:'line',label:'초기 목표',data:origPath,borderColor:'#4ade9a',backgroundColor:'transparent',borderWidth:2,pointRadius:0,tension:0.35,order:1},
-        {type:'bar',label:'실제 자산',data:actualData,backgroundColor:simEntry?'rgba(245,166,35,0.6)':'rgba(91,143,255,0.7)',borderRadius:3,order:2}
+        {type:'line',label:'초기 목표',data:origPath,borderColor:'#4ade9a',backgroundColor:'transparent',borderWidth:2.5,pointRadius:0,tension:0.35,order:1},
+        {type:'bar',label:'실제 자산',data:actualData,backgroundColor:'rgba(91,143,255,0.7)',borderRadius:3,order:2}
       ]
     },
     options:{
       responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.parsed.y)}}},
+      interaction:{mode:'index',intersect:false}, // Cross 시각화를 위해 인덱스 기준 교차 활성화
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          enabled:true,
+          backgroundColor:'rgba(24, 28, 39, 0.95)',
+          titleColor:'#eef0f8',
+          bodyColor:'#8b90a8',
+          borderColor:'rgba(255,255,255,0.1)',
+          borderWidth:1,
+          padding:12,
+          callbacks:{
+            // 3번 요청 반영: 교차 지점에 날짜 / 목표 / 실제 / 차액 / 달성률 연동 안내창 커스터마이징
+            title: function(context) {
+              const idx = context[0].dataIndex;
+              if(idx === 0) return '🏁 투자 시작 시점';
+              if(months[idx-1]) {
+                return '📅 ' + fmtShortDate(months[idx-1].date);
+              }
+              let targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + (idx - 1));
+              return '📅 ' + fmtShortDate(targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월');
+            },
+            label: function(context) {
+              const idx = context.dataIndex;
+              const goalVal = origPath[idx] || 0;
+              const actVal = actualData[idx];
+              
+              if(context.dataset.type === 'line') {
+                return '• 목표 금액: ' + fmtKoreanUnit(goalVal);
+              } else {
+                if(actVal === null || actVal === undefined) return '• 실제 금액: 기록 없음';
+                const diffVal = actVal - goalVal;
+                const progress = goalVal > 0 ? ((actVal / goalVal) * 100).toFixed(1) : '0.0';
+                const diffStr = diffVal >= 0 ? '+' + fmtKoreanUnit(diffVal) : '-' + fmtKoreanUnit(Math.abs(diffVal));
+                
+                return [
+                  '• 실제 금액: ' + fmtKoreanUnit(actVal),
+                  '• 차액 표시: ' + diffStr,
+                  '• 목표 대비 달성률: ' + progress + '%'
+                ];
+              }
+            }
+          }
+        }
+      },
       scales:{
-        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#555a72',font:{size:10},maxRotation:0,autoSkip:false}},
-        y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#555a72',font:{size:10},callback:v=>v>=10000?Math.round(v/10000)+'만':v}}
+        x:{
+          grid:{color:'rgba(255,255,255,0.05)'},
+          ticks:{color:'#555a72',font:{size:10},maxRotation:0,autoSkip:false}
+        },
+        y:{
+          grid:{color:'rgba(255,255,255,0.05)'},
+          ticks:{
+            color:'#555a72',
+            font:{size:10},
+            // 2번 요청 반영: 5000만이 아니라 '5천만', '1억' 단위 매핑 처리
+            callback: function(value) {
+              if (value === 0) return '0';
+              if (value >= 100000000) {
+                const eok = value / 100000000;
+                return eok.toFixed(1).replace('.0', '') + '억';
+              }
+              if (value >= 10000) {
+                return (value / 10000).toLocaleString() + '만';
+              }
+              return value;
+            }
+          }
+        }
       }
     }
   });
-
-  if(simEntry){
-    // 시뮬레이션 표시 배너
-    document.getElementById('dash-gap').textContent+=' (시뮬레이션)';
-  }
 }
 
 function renderHistory(){
@@ -627,7 +671,7 @@ function renderHistory(){
     return`<div class="history-item">
       <div class="hi-left">
         <div class="hi-date">${m.date}</div>
-        <div class="hi-invest">${m.invest===0?'추가 납입 없음':'+'+fmt(m.invest)}</div>
+        <div class="hi-invest">${m.invest===0?'추가 납입 없음':'+'+fmtExactRaw(m.invest)}</div>
       </div>
       <div class="hi-right">
         <div class="hi-rate ${rc}">${rs}${m.rate}%</div>
