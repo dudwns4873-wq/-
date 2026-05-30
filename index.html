@@ -38,7 +38,7 @@
   .gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
   .gauge-pct{font-family:var(--mono);font-size:36px;font-weight:500;color:var(--text);line-height:1;}
   .gauge-label{font-size:11px;color:var(--text3);margin-top:4px;}
-  .gap-badge{margin-top:14px;padding:7px 18px;border-radius999px;font-size:13px;font-weight:500;}
+  .gap-badge{margin-top:14px;padding:7px 18px;border-radius:999px;font-size:13px;font-weight:500;}
   .gap-badge.gap-neg{background:rgba(255,95,109,0.12);color:var(--red);border:1px solid rgba(255,95,109,0.25);}
   .gap-badge.gap-pos{background:rgba(74,222,154,0.1);color:var(--accent);border:1px solid rgba(74,222,154,0.25);}
   .gap-badge.gap-zero{background:rgba(139,144,168,0.1);color:var(--text2);border:1px solid var(--border);}
@@ -56,7 +56,6 @@
   .legend-sq{width:10px;height:10px;border-radius:2px;}
   .chart-wrap{position:relative;height:240px;}
   
-  /* 계좌 입력 폼 스타일 */
   .account-group{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);margin-bottom:12px;}
   .account-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
   .account-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
@@ -66,7 +65,6 @@
   .number-input:focus{border-color:var(--accent);}
   .input-hint{font-size:10px;color:var(--text3);margin-top:4px;height:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   
-  /* 결과 창 전용 스타일 */
   .calc-result-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;margin-top:14px;}
   .calc-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;}
   .calc-row .cr-label{color:var(--text2);}
@@ -274,14 +272,29 @@
   </div>
 
   <div class="page" id="page-goal">
-    <div class="section-title" style="margin-top:4px;">목표 파라미터</div>
+    <div class="section-title" style="margin-top:4px;">📅 투자 시작 시점 설정</div>
+    <div class="slider-card" style="padding: 14px 16px;">
+      <div class="date-select-wrap" style="margin-bottom:0;">
+        <select class="date-select" id="g-start-year" onchange="updateGoalDisplay()"></select>
+        <select class="date-select" id="g-start-month" onchange="updateGoalDisplay()"></select>
+      </div>
+    </div>
+
+    <div class="section-title">목표 파라미터</div>
     <div class="slider-card">
       <div class="slider-header"><span class="slider-name">초기 자본금</span><span class="slider-val" id="g-capital-display">0원</span></div>
       <input type="range" id="g-capital" min="0" max="100" step="1" value="0" oninput="updateGoalDisplay()">
       <div class="slider-minmax"><span>0원</span><span>1억원</span></div>
     </div>
+    
     <div class="slider-card">
-      <div class="slider-header"><span class="slider-name">월 납입금</span><span class="slider-val" id="g-monthly-display">0원</span></div>
+      <div class="slider-header"><span class="slider-name">첫 월 납입 시작 시점</span><span class="slider-val" id="g-delay-display">즉시 납입</span></div>
+      <input type="range" id="g-delay" min="0" max="6" step="1" value="0" oninput="updateGoalDisplay()">
+      <div class="slider-minmax"><span>즉시 납입</span><span>6개월 뒤부터</span></div>
+    </div>
+
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">월 납입금 (본격 투자시)</span><span class="slider-val" id="g-monthly-display">0원</span></div>
       <input type="range" id="g-monthly" min="0" max="50" step="1" value="0" oninput="updateGoalDisplay()">
       <div class="slider-minmax"><span>0원</span><span>500만원</span></div>
     </div>
@@ -291,16 +304,17 @@
       <div class="slider-minmax"><span>0%</span><span>20%</span></div>
     </div>
     <div class="slider-card">
-      <div class="slider-header"><span class="slider-name">목표 기간</span><span class="slider-val" id="g-period-display">1개월</span></div>
+      <div class="slider-header"><span class="slider-name">총 목표 투자 기간</span><span class="slider-val" id="g-period-display">1개월</span></div>
       <input type="range" id="g-period" min="1" max="120" step="1" value="12" oninput="updateGoalDisplay()">
       <div class="slider-minmax"><span>1개월</span><span>10년</span></div>
     </div>
+    
     <div class="result-banner">
-      <div class="rb-label">목표 금액</div>
+      <div class="rb-label">최종 목표 금액</div>
       <div class="rb-val" id="g-result">0원</div>
       <div class="result-sub-grid">
-        <div class="result-sub"><div class="rs-label">총 납입 예정</div><div class="rs-val" id="g-total-invest">0원</div></div>
-        <div class="result-sub"><div class="rs-label">예상 수익</div><div class="rs-val" id="g-profit">0원</div></div>
+        <div class="result-sub"><div class="rs-label">총 실납입 금액</div><div class="rs-val" id="g-total-invest">0원</div></div>
+        <div class="result-sub"><div class="rs-label">예상 복리 수익</div><div class="rs-val" id="g-profit">0원</div></div>
       </div>
     </div>
     <button class="btn-primary" onclick="saveGoal()" style="margin-top:14px;">목표 저장하기</button>
@@ -345,9 +359,7 @@ let chartObj=null;
 function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{goal:null,months:[]};}catch(e){return{goal:null,months:[]};}}
 function save(data){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}}
 
-function fmtExactRaw(n) {
-  return Math.round(n).toLocaleString() + '원';
-}
+function fmtExactRaw(n) { return Math.round(n).toLocaleString() + '원'; }
 
 function fmtKoreanUnit(n) {
   n = Math.round(n);
@@ -383,21 +395,43 @@ function showToast(msg){
 
 function initDateSelects(){
   const now=new Date();
+  
+  // 월 입력창 전용 셀렉트 박스
   const ySel=document.getElementById('sel-year');
   const mSel=document.getElementById('sel-month');
   ySel.innerHTML='';
-  for(let y=now.getFullYear()-2;y<=now.getFullYear()+1;y++){
-    const o=document.createElement('option');
-    o.value=y;o.textContent=y+'년';
+  for(let y=now.getFullYear()-2;y<=now.getFullYear()+4;y++){
+    const o=document.createElement('option'); o.value=y; o.textContent=y+'년';
     if(y===now.getFullYear())o.selected=true;
     ySel.appendChild(o);
   }
   mSel.innerHTML='';
   for(let m=1;m<=12;m++){
-    const o=document.createElement('option');
-    o.value=m;o.textContent=m+'월';
+    const o=document.createElement('option'); o.value=m; o.textContent=m+'월';
     if(m===now.getMonth()+1)o.selected=true;
     mSel.appendChild(o);
+  }
+
+  // 목표 설정창 전용 셀렉트 박스 (시작 연월용)
+  const gySel=document.getElementById('g-start-year');
+  const gmSel=document.getElementById('g-start-month');
+  gySel.innerHTML=''; gmSel.innerHTML='';
+  for(let y=now.getFullYear()-1;y<=now.getFullYear()+3;y++){
+    const o=document.createElement('option'); o.value=y; o.textContent=y+'년';
+    if(y===now.getFullYear())o.selected=true;
+    gySel.appendChild(o);
+  }
+  for(let m=1;m<=12;m++){
+    const o=document.createElement('option'); o.value=m; o.textContent=m+'월';
+    if(m===now.getMonth()+1)o.selected=true;
+    gmSel.appendChild(o);
+  }
+  
+  // 기존 저장 데이터 있으면 반영
+  const data = load();
+  if(data.goal && data.goal.startYear && data.goal.startMonth) {
+    gySel.value = data.goal.startYear;
+    gmSel.value = data.goal.startMonth;
   }
 }
 
@@ -428,36 +462,59 @@ function resetInputForm(){
 }
 
 function updateGoalDisplay(){
+  const startYear=parseInt(document.getElementById('g-start-year').value) || new Date().getFullYear();
+  const startMonth=parseInt(document.getElementById('g-start-month').value) || (new Date().getMonth()+1);
   const capital=parseInt(document.getElementById('g-capital').value)*100*10000;
+  const delayMonths=parseInt(document.getElementById('g-delay').value);
   const monthly=parseInt(document.getElementById('g-monthly').value)*10*10000;
   const rate=parseInt(document.getElementById('g-rate').value)/10;
-  const months=parseInt(document.getElementById('g-period').value);
+  const totalMonths=parseInt(document.getElementById('g-period').value);
+  
   document.getElementById('g-capital-display').textContent=fmtKoreanUnit(capital);
+  document.getElementById('g-delay-display').textContent=delayMonths === 0 ? '즉시 납입' : delayMonths + '개월 뒤부터';
   document.getElementById('g-monthly-display').textContent=monthly===0?'0원':fmtKoreanUnit(monthly);
   document.getElementById('g-rate-display').textContent=rate.toFixed(1)+'%';
-  document.getElementById('g-period-display').textContent=fmtPeriod(months);
+  document.getElementById('g-period-display').textContent=fmtPeriod(totalMonths);
+  
   const mr=rate/100/12;
   let total=capital;
-  for(let i=0;i<months;i++)total=total*(1+mr)+monthly;
+  let accumulatedInvest = capital;
+
+  for(let i=1; i<=totalMonths; i++){
+    // 현재 달이 딜레이 기간보다 크면 납입금 추가
+    const currentMonthlyInvest = (i > delayMonths) ? monthly : 0;
+    total = total * (1 + mr) + currentMonthlyInvest;
+    accumulatedInvest += currentMonthlyInvest;
+  }
+  
   total=Math.round(total);
-  const invested=capital+monthly*months;
   document.getElementById('g-result').textContent=fmtKoreanUnit(total);
-  document.getElementById('g-total-invest').textContent=fmtKoreanUnit(invested);
-  document.getElementById('g-profit').textContent=fmtKoreanUnit(total-invested);
+  document.getElementById('g-total-invest').textContent=fmtKoreanUnit(accumulatedInvest);
+  document.getElementById('g-profit').textContent=fmtKoreanUnit(total-accumulatedInvest);
 }
 
 function saveGoal(){
+  const startYear=parseInt(document.getElementById('g-start-year').value);
+  const startMonth=parseInt(document.getElementById('g-start-month').value);
   const capital=parseInt(document.getElementById('g-capital').value)*100*10000;
+  const delayMonths=parseInt(document.getElementById('g-delay').value);
   const monthly=parseInt(document.getElementById('g-monthly').value)*10*10000;
   const rate=parseInt(document.getElementById('g-rate').value)/10;
-  const months=parseInt(document.getElementById('g-period').value);
+  const totalMonths=parseInt(document.getElementById('g-period').value);
+  
   const mr=rate/100/12;
   let target=capital;
-  for(let i=0;i<months;i++)target=target*(1+mr)+monthly;
+  for(let i=1;i<=totalMonths;i++){
+    const currentMonthlyInvest = (i > delayMonths) ? monthly : 0;
+    target=target*(1+mr)+currentMonthlyInvest;
+  }
+  
   const data=load();
-  data.goal={capital,monthly,rate,months,target:Math.round(target)};
+  data.goal={
+    startYear, startMonth, capital, delayMonths, monthly, rate, months:totalMonths, target:Math.round(target)
+  };
   save(data);
-  showToast('✅ 목표가 저장되었습니다');
+  showToast('✅ 목표 시뮬레이션 정보가 저장되었습니다');
   switchTab('dashboard',document.querySelector('.tab-btn'));
 }
 
@@ -471,7 +528,6 @@ function getPreviousAssetAmount(data, targetIdx) {
   return cur;
 }
 
-// 💡 실시간으로 3개 계좌 값을 읽어서 힌트와 결과창 수익률을 실시간 계산해주는 핵심 로직
 function liveRecalculate() {
   const data = load();
   if(!data.goal) return;
@@ -493,11 +549,9 @@ function liveRecalculate() {
   document.getElementById('res-total-asset').textContent = fmtExactRaw(totalAsset);
   document.getElementById('res-total-invest').textContent = fmtExactRaw(totalInvest);
 
-  // 현재 가상 인덱스 파악
   const year = parseInt(document.getElementById('sel-year').value);
   const month = parseInt(document.getElementById('sel-month').value);
   
-  // 현재 입력중인 날짜가 들어갈 자리 추적하기 위해 임시 정렬
   let monthsCopy = [...data.months];
   let currentIdx = editingIndex;
   
@@ -524,7 +578,6 @@ function liveRecalculate() {
   rateEl.style.color = rate > 0 ? 'var(--accent)' : (rate < 0 ? 'var(--red)' : 'var(--text3)');
 }
 
-// 년/월 셀렉트 박스 바꿨을 때도 수익률 실시간 재계산 연동
 document.getElementById('sel-year').addEventListener('change', liveRecalculate);
 document.getElementById('sel-month').addEventListener('change', liveRecalculate);
 
@@ -535,7 +588,6 @@ function saveMonthData(){
   const year=parseInt(document.getElementById('sel-year').value);
   const month=parseInt(document.getElementById('sel-month').value);
   
-  // 3개 계좌 수집
   const ac1Asset = parseFloat(document.getElementById('ac1-asset').value) || 0;
   const ac1Invest = parseFloat(document.getElementById('ac1-invest').value) || 0;
   const ac2Asset = parseFloat(document.getElementById('ac2-asset').value) || 0;
@@ -577,7 +629,6 @@ function saveMonthData(){
   
   data.months[targetIdx].rate = Math.round(calculatedRate * 10) / 10;
   
-  // 중간 연도 수정 시 뒷단 자동 연쇄 계산
   if(editingIndex >= 0) {
     for(let i = targetIdx + 1; i < data.months.length; i++) {
       let pAs = getPreviousAssetAmount(data, i);
@@ -641,11 +692,17 @@ function deleteEntry(idx){
   showToast('🗑️ 삭제되었습니다');
 }
 
+// 💡 딜레이 기간을 계산에 녹여서 목표 패스 생성하는 함수
 function computeOrigPath(goal){
   const pts=[goal.capital];
   const mr=goal.rate/100/12;
   let cur=goal.capital;
-  for(let i=0; i<goal.months; i++){cur=cur*(1+mr)+goal.monthly;pts.push(Math.round(cur));}
+  const delay = goal.delayMonths || 0;
+  for(let i=1; i<=goal.months; i++){
+    const currentMonthlyInvest = (i > delay) ? goal.monthly : 0;
+    cur=cur*(1+mr)+currentMonthlyInvest;
+    pts.push(Math.round(cur));
+  }
   return pts;
 }
 
@@ -659,14 +716,18 @@ function computeActualPath(goal,months){
   return pts;
 }
 
-function computeRevisedMonths(goal,currentAsset){
+function computeRevisedMonths(goal,currentAsset,elapsedMonths){
   const mr=goal.rate/100/12;
   const target=goal.target;
   if(currentAsset>=target)return 0;
   let cur=currentAsset;
   let m=0;
+  const delay = goal.delayMonths || 0;
+  
   while(cur<target&&m<600){
-    cur=cur*(1+mr)+goal.monthly;
+    const absoluteMonthIdx = elapsedMonths + m + 1; // 시작 시점부터 통산 몇 개월 차인지 계산
+    const currentMonthlyInvest = (absoluteMonthIdx > delay) ? goal.monthly : 0;
+    cur=cur*(1+mr)+currentMonthlyInvest;
     m++;
   }
   return m;
@@ -721,7 +782,7 @@ function renderDashboard(){
 
   if(months.length>0){
     document.getElementById('revised-info').style.display='block';
-    const revisedM=computeRevisedMonths(goal,current);
+    const revisedM=computeRevisedMonths(goal,current,months.length);
     const elapsed=months.length;
     const newTotal=elapsed+revisedM;
     const origTotal=goal.months;
@@ -744,18 +805,21 @@ function renderDashboard(){
   }
 
   const origPath=computeOrigPath(goal);
-  const actualData=new Array(goal.months+1).fill(null);
+  const actualData = new Array(goal.months + 1).fill(null);
   actual.forEach((v,i)=>{actualData[i]=v;});
 
   const labels=[];
-  const baseDate = months.length > 0 ? new Date(months[0].year, months[0].month - 1) : new Date();
+  // 💡 사용자가 설정한 시작년월 기준으로 캘린더 생성
+  const baseYear = goal.startYear || new Date().getFullYear();
+  const baseMonth = goal.startMonth || (new Date().getMonth() + 1);
+  const baseDate = new Date(baseYear, baseMonth - 1);
   
   for(let i=0;i<=goal.months;i++){
-    let targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + (i - 1));
+    let targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + i);
     let labelStr = targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월';
-    if(i===0) labelStr = '시작';
+    if(i===0) labelStr = '시작 (' + (targetDate.getMonth() + 1) + '월)';
     
-    if(i===0){labels.push('시작');}
+    if(i===0){labels.push(labelStr);}
     else if(goal.months<=24){labels.push(i%3===0? fmtShortDate(labelStr) : '');}
     else{labels.push(i%12===0? targetDate.getFullYear()+'년' : '');}
   }
@@ -768,7 +832,7 @@ function renderDashboard(){
     data:{
       labels,
       datasets:[
-        {type:'line',label:'초기 목표',data:origPath,borderColor:'#4ade9a',backgroundColor:'transparent',borderWidth:2.5,pointRadius:0,tension:0.35,order:1},
+        {type:'line',label:'초기 목표',data:origPath,borderColor:'#4ade9a',backgroundColor:'transparent',borderWidth:2.5,pointRadius:0,tension:0.15,order:1},
         {type:'bar',label:'실제 자산',data:actualData,backgroundColor:'rgba(91,143,255,0.7)',borderRadius:3,order:2}
       ]
     },
@@ -788,10 +852,9 @@ function renderDashboard(){
           callbacks:{
             title: function(context) {
               const idx = context[0].dataIndex;
-              if(idx === 0) return '🏁 투자 시작 시점';
-              if(months[idx-1]) return '📅 ' + fmtShortDate(months[idx-1].date);
-              let targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + (idx - 1));
-              return '📅 ' + fmtShortDate(targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월');
+              let targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + idx);
+              if(idx === 0) return '🏁 투자 시작 시점 ('+ targetDate.getFullYear() + '년 ' + (targetDate.getMonth()+1) + '월)';
+              return '📅 ' + targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월';
             },
             label: function(context) {
               const idx = context.dataIndex;
@@ -799,7 +862,11 @@ function renderDashboard(){
               const actVal = actualData[idx];
               
               if(context.dataset.type === 'line') {
-                return '• 목표 금액: ' + fmtKoreanUnit(goalVal);
+                let note = '';
+                if(idx > 0 && idx <= (goal.delayMonths || 0)) {
+                  note = ' (납입 대기 구간)';
+                }
+                return '• 목표 금액: ' + fmtKoreanUnit(goalVal) + note;
               } else {
                 if(actVal === null || actVal === undefined) return '• 실제 금액: 기록 없음';
                 const diffVal = actVal - goalVal;
@@ -866,8 +933,9 @@ function renderHistory(){
   }).join('');
 }
 
-updateGoalDisplay();
+// 초기화 구동
 initDateSelects();
+updateGoalDisplay();
 renderDashboard();
 </script>
 </body>
