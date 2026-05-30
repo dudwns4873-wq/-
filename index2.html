@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>투자 목표 트래커</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg:#0f1117;--bg2:#181c27;--bg3:#1e2333;--card:#242840;
+    --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+    --text:#eef0f8;--text2:#8b90a8;--text3:#555a72;
+    --accent:#4ade9a;--accent2:#3bc47f;--amber:#f5a623;--blue:#5b8fff;--red:#ff5f6d;
+    --radius:14px;--radius-sm:8px;
+    --font:'Noto Sans KR',sans-serif;--mono:'DM Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;}
+  .app{max-width:480px;margin:0 auto;padding:0 0 80px;}
+  .header{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;}
+  .header h1{font-size:18px;font-weight:700;letter-spacing:-.3px;}
+  .header-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+  .tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);}
+  .tab-btn{flex:1;padding:12px 4px 10px;border:none;background:none;color:var(--text3);font-family:var(--font);font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:color .2s;}
+  .tab-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .tab-btn.active{color:var(--accent);}
+  .page{display:none;padding:20px;}
+  .page.active{display:block;}
+  .section-title{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin:24px 0 10px;}
+  .gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:28px 0 20px;}
+  .gauge-ring{position:relative;width:180px;height:180px;}
+  .gauge-ring svg{transform:rotate(-90deg);}
+  .gauge-ring circle{transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1);}
+  .gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .gauge-pct{font-family:var(--mono);font-size:36px;font-weight:500;color:var(--text);line-height:1;}
+  .gauge-label{font-size:11px;color:var(--text3);margin-top:4px;}
+  .gap-badge{margin-top:14px;padding:7px 18px;border-radius:999px;font-size:13px;font-weight:500;}
+  .gap-neg{background:rgba(255,95,109,0.12);color:var(--red);border:1px solid rgba(255,95,109,0.25);}
+  .gap-pos{background:rgba(74,222,154,0.1);color:var(--accent);border:1px solid rgba(74,222,154,0.25);}
+  .gap-zero{background:rgba(139,144,168,0.1);color:var(--text2);border:1px solid var(--border);}
+  .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .metric-card{background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);}
+  .metric-label{font-size:11px;color:var(--text3);margin-bottom:6px;}
+  .metric-val{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--text);white-space:nowrap;}
+  .metric-val.accent{color:var(--accent);}
+  .metric-val.amber{color:var(--amber);}
+  .metric-val.blue{color:var(--blue);}
+  .chart-card{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);margin-top:10px;}
+  .chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
+  .legend-dot{width:10px;height:3px;border-radius:2px;}
+  .legend-sq{width:10px;height:10px;border-radius:2px;}
+  .chart-wrap{position:relative;height:240px;}
+  .slider-card{background:var(--card);border-radius:var(--radius);padding:18px 16px;border:1px solid var(--border);margin-bottom:10px;}
+  .slider-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
+  .slider-name{font-size:13px;color:var(--text2);}
+  .slider-val{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--text);}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:var(--bg);border-radius:2px;outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--bg2);box-shadow:0 0 0 1px var(--accent2);transition:transform .15s;}
+  input[type=range]::-webkit-slider-thumb:active{transform:scale(1.2);}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--bg2);}
+  .slider-minmax{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:5px;}
+  .input-card{background:var(--card);border-radius:var(--radius);padding:18px 16px;border:1px solid var(--border);margin-bottom:10px;}
+  .input-label{font-size:13px;color:var(--text2);margin-bottom:10px;display:block;}
+  .number-input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;font-family:var(--mono);font-size:20px;color:var(--text);outline:none;transition:border-color .2s;}
+  .number-input:focus{border-color:var(--accent);}
+  .input-hint{font-size:11px;color:var(--text3);margin-top:6px;}
+  .btn-primary{width:100%;padding:15px;background:var(--accent);color:#0a1a12;font-family:var(--font);font-size:15px;font-weight:700;border:none;border-radius:var(--radius);cursor:pointer;transition:background .15s,transform .1s;margin-top:6px;}
+  .btn-primary:active{transform:scale(0.98);background:var(--accent2);}
+  .btn-secondary{padding:7px 14px;background:var(--bg3);color:var(--text2);font-family:var(--font);font-size:12px;border:1px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;transition:background .15s;}
+  .btn-secondary:hover{background:var(--card);}
+  .result-banner{background:linear-gradient(135deg,rgba(74,222,154,0.08),rgba(91,143,255,0.08));border:1px solid rgba(74,222,154,0.2);border-radius:var(--radius);padding:18px;margin-top:10px;text-align:center;}
+  .result-banner .rb-label{font-size:12px;color:var(--text3);margin-bottom:6px;}
+  .result-banner .rb-val{font-family:var(--mono);font-size:24px;font-weight:500;color:var(--accent);}
+  .result-sub-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+  .result-sub{background:var(--bg3);border-radius:var(--radius-sm);padding:10px 12px;text-align:center;}
+  .result-sub .rs-label{font-size:10px;color:var(--text3);margin-bottom:4px;}
+  .result-sub .rs-val{font-family:var(--mono);font-size:13px;color:var(--text2);white-space:nowrap;}
+  .history-item{background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+  .hi-left .hi-date{font-size:12px;color:var(--text3);margin-bottom:5px;}
+  .hi-left .hi-invest{font-family:var(--mono);font-size:15px;color:var(--text);}
+  .hi-right{text-align:right;}
+  .hi-rate{font-family:var(--mono);font-size:18px;font-weight:500;}
+  .hi-rate.pos{color:var(--accent);}
+  .hi-rate.neg{color:var(--red);}
+  .hi-rate.zero{color:var(--text3);}
+  .hi-actions{display:flex;gap:6px;margin-top:6px;justify-content:flex-end;}
+  .edit-notice{background:rgba(91,143,255,0.1);border:1px solid rgba(91,143,255,0.25);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:12px;display:none;}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--text3);}
+  .empty-state svg{width:40px;height:40px;stroke:var(--text3);fill:none;stroke-width:1.5;margin-bottom:12px;}
+  .empty-state p{font-size:14px;line-height:1.6;}
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border2);border-radius:999px;padding:10px 22px;font-size:13px;color:var(--text);white-space:nowrap;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:200;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .no-goal-warn{background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--amber);margin-bottom:16px;}
+  .revised-info{background:rgba(91,143,255,0.08);border:1px solid rgba(91,143,255,0.2);border-radius:var(--radius);padding:14px 16px;margin-top:10px;}
+  .revised-info .ri-title{font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;}
+  .revised-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;}
+  .revised-row .rr-label{font-size:13px;color:var(--text2);}
+  .revised-row .rr-val{font-family:var(--mono);font-size:14px;color:var(--blue);}
+  .date-select-wrap { display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:10px; }
+  select.date-select { background:var(--bg); border:1px solid var(--border2); border-radius:var(--radius-sm); padding:10px 12px; font-family:var(--font); font-size:15px; color:var(--text); outline:none; width:100%; -webkit-appearance:none; appearance:none; cursor:pointer; }
+  select.date-select:focus { border-color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div>
+      <h1>투자 목표 트래커</h1>
+      <div class="header-sub" id="header-sub">목표를 설정해 주세요</div>
+    </div>
+  </div>
+
+  <div class="page active" id="page-dashboard">
+    <div id="no-goal-warn" class="no-goal-warn" style="display:none;margin-top:16px;">⚙️ 목표 탭에서 먼저 초기 목표를 설정해 주세요.</div>
+    <div class="gauge-wrap">
+      <div class="gauge-ring">
+        <svg width="180" height="180" viewBox="0 0 180 180">
+          <circle cx="90" cy="90" r="75" fill="none" stroke="#1e2333" stroke-width="14"/>
+          <circle id="gauge-circle" cx="90" cy="90" r="75" fill="none" stroke="#4ade9a" stroke-width="14"
+            stroke-dasharray="471.24" stroke-dashoffset="471.24" stroke-linecap="round"/>
+        </svg>
+        <div class="gauge-center">
+          <div class="gauge-pct" id="dash-pct">—</div>
+          <div class="gauge-label">달성률</div>
+        </div>
+      </div>
+      <div class="gap-badge gap-zero" id="dash-gap">목표를 설정해 주세요</div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-label">현재 자산</div>
+        <div class="metric-val accent" id="dash-current">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">목표 금액</div>
+        <div class="metric-val" id="dash-orig">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">총 납입금</div>
+        <div class="metric-val blue" id="dash-invested">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">누적 수익</div>
+        <div class="metric-val amber" id="dash-profit">—</div>
+      </div>
+    </div>
+
+    <div class="revised-info" id="revised-info" style="display:none;">
+      <div class="ri-title">📅 수정 목표 (기간 재계산)</div>
+      <div class="revised-row">
+        <span class="rr-label">원래 목표 기간</span>
+        <span class="rr-val" id="rv-orig-period">—</span>
+      </div>
+      <div class="revised-row">
+        <span class="rr-label">현재 페이스 기준</span>
+        <span class="rr-val" id="rv-new-period">—</span>
+      </div>
+      <div class="revised-row">
+        <span class="rr-label">기간 차이</span>
+        <span class="rr-val" id="rv-diff">—</span>
+      </div>
+    </div>
+
+    <div class="section-title">자산 비교</div>
+    <div class="chart-card">
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#4ade9a"></div>초기 목표</div>
+        <div class="legend-item"><div class="legend-sq" style="background:#5b8fff"></div>실제 자산</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="mainChart" role="img" aria-label="초기목표와 실제자산 비교 차트">자산 비교 차트</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-input">
+    <div class="edit-notice" id="edit-notice">✏️ 이전 기록을 수정 중입니다</div>
+
+    <div class="section-title" style="margin-top:4px;">날짜 선택</div>
+    <div class="input-card">
+      <div class="date-select-wrap">
+        <select class="date-select" id="sel-year"></select>
+        <select class="date-select" id="sel-month"></select>
+      </div>
+    </div>
+
+    <div class="section-title">추가 투자금</div>
+    <div class="slider-card">
+      <div class="slider-header">
+        <span class="slider-name">추가 투자금</span>
+        <span class="slider-val" id="invest-display">0원</span>
+      </div>
+      <input type="range" id="invest-slider" min="0" max="50" step="1" value="0" oninput="updateInvestDisplay(this.value)">
+      <div class="slider-minmax"><span>0원</span><span>500만원</span></div>
+    </div>
+
+    <div class="section-title">실제 수익률</div>
+    <div class="input-card">
+      <label class="input-label" for="return-input">수익률 입력 (%)</label>
+      <input type="number" class="number-input" id="return-input" placeholder="예: 3.5 또는 -2.1" step="0.1">
+      <div class="input-hint">음수 입력 가능 · 소수점 한 자리까지</div>
+    </div>
+
+    <button class="btn-primary" onclick="saveMonthData()">💾 저장하기</button>
+  </div>
+
+  <div class="page" id="page-goal">
+    <div class="section-title" style="margin-top:4px;">목표 파라미터</div>
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">초기 자본금</span><span class="slider-val" id="g-capital-display">0원</span></div>
+      <input type="range" id="g-capital" min="0" max="100" step="1" value="0" oninput="updateGoalDisplay()">
+      <div class="slider-minmax"><span>0원</span><span>1억원</span></div>
+    </div>
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">월 납입금</span><span class="slider-val" id="g-monthly-display">0원</span></div>
+      <input type="range" id="g-monthly" min="0" max="50" step="1" value="0" oninput="updateGoalDisplay()">
+      <div class="slider-minmax"><span>0원</span><span>500만원</span></div>
+    </div>
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">연평균 목표 수익률</span><span class="slider-val" id="g-rate-display">0.0%</span></div>
+      <input type="range" id="g-rate" min="0" max="200" step="1" value="0" oninput="updateGoalDisplay()">
+      <div class="slider-minmax"><span>0%</span><span>20%</span></div>
+    </div>
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">목표 기간</span><span class="slider-val" id="g-period-display">1개월</span></div>
+      <input type="range" id="g-period" min="1" max="120" step="1" value="12" oninput="updateGoalDisplay()">
+      <div class="slider-minmax"><span>1개월</span><span>10년</span></div>
+    </div>
+    <div class="result-banner">
+      <div class="rb-label">목표 금액</div>
+      <div class="rb-val" id="g-result">0원</div>
+      <div class="result-sub-grid">
+        <div class="result-sub"><div class="rs-label">총 납입 예정</div><div class="rs-val" id="g-total-invest">0원</div></div>
+        <div class="result-sub"><div class="rs-label">예상 수익</div><div class="rs-val" id="g-profit">0원</div></div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="saveGoal()" style="margin-top:14px;">목표 저장하기</button>
+  </div>
+
+  <div class="page" id="page-history">
+    <div class="section-title" style="margin-top:4px;">월별 기록</div>
+    <div id="history-empty" class="empty-state">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      <p>아직 기록이 없어요.<br>월 데이터를 입력해 보세요!</p>
+    </div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<nav class="tabbar">
+  <button class="tab-btn active" onclick="switchTab('dashboard',this)">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    대시보드
+  </button>
+  <button class="tab-btn" onclick="switchTab('input',this)">
+    <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    월 입력
+  </button>
+  <button class="tab-btn" onclick="switchTab('goal',this)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>
+    목표 설정
+  </button>
+  <button class="tab-btn" onclick="switchTab('history',this)">
+    <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+    기록
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY='invest_tracker_v2';
+let editingIndex=-1;
+let chartObj=null;
+
+function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{goal:null,months:[]};}catch(e){return{goal:null,months:[]};}}
+function save(data){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}}
+
+// 대시보드 표시용 원 단위 무조건 콤마 표기 함수
+function fmtExactRaw(n) {
+  return Math.round(n).toLocaleString() + '원';
+}
+
+// 툴팁 및 목표값 설정용 한글 단위 결합 함수
+function fmtKoreanUnit(n) {
+  n = Math.round(n);
+  if (n >= 100000000) {
+    const eok = Math.floor(n / 100000000);
+    const remain = Math.round((n % 100000000) / 10000);
+    return eok + '억' + (remain > 0 ? ' ' + remain.toLocaleString() + '만' : '') + '원';
+  }
+  if (n >= 10000) return Math.round(n / 10000).toLocaleString() + '만원';
+  return n.toLocaleString() + '원';
+}
+
+function fmtPeriod(months){
+  months=Math.round(months);
+  const yr=Math.floor(months/12),mo=months%12;
+  if(yr>0&&mo>0)return yr+'년 '+mo+'개월';
+  if(yr>0)return yr+'년';
+  return mo+'개월';
+}
+
+// 교차점 날짜 포맷 함수 (예: 2027년 6월 -> 27.6월)
+function fmtShortDate(dateStr) {
+  if(!dateStr) return '';
+  const match = dateStr.match(/(\d{2})(\d{2})년\s*(\d+)월/);
+  if(match) return match[2] + '.' + match[3] + '월';
+  return dateStr.replace('년 ', '.').replace('월', '월');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function initDateSelects(){
+  const now=new Date();
+  const ySel=document.getElementById('sel-year');
+  const mSel=document.getElementById('sel-month');
+  ySel.innerHTML='';
+  for(let y=now.getFullYear()-2;y<=now.getFullYear()+1;y++){
+    const o=document.createElement('option');
+    o.value=y;o.textContent=y+'년';
+    if(y===now.getFullYear())o.selected=true;
+    ySel.appendChild(o);
+  }
+  mSel.innerHTML='';
+  for(let m=1;m<=12;m++){
+    const o=document.createElement('option');
+    o.value=m;o.textContent=m+'월';
+    if(m===now.getMonth()+1)o.selected=true;
+    mSel.appendChild(o);
+  }
+}
+
+function switchTab(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='dashboard')renderDashboard();
+  if(name==='history')renderHistory();
+  if(name==='input'&&editingIndex<0){resetInputForm();}
+  window.scrollTo(0,0);
+}
+
+function resetInputForm(){
+  initDateSelects();
+  document.getElementById('invest-slider').value=0;
+  updateInvestDisplay(0);
+  document.getElementById('return-input').value='';
+  document.getElementById('edit-notice').style.display='none';
+  editingIndex=-1;
+}
+
+function updateInvestDisplay(v){
+  const w=parseInt(v)*10;
+  document.getElementById('invest-display').textContent=w===0?'0원':w+'만원';
+}
+
+function updateGoalDisplay(){
+  const capital=parseInt(document.getElementById('g-capital').value)*100*10000;
+  const monthly=parseInt(document.getElementById('g-monthly').value)*10*10000;
+  const rate=parseInt(document.getElementById('g-rate').value)/10;
+  const months=parseInt(document.getElementById('g-period').value);
+  document.getElementById('g-capital-display').textContent=fmtKoreanUnit(capital);
+  document.getElementById('g-monthly-display').textContent=monthly===0?'0원':fmtKoreanUnit(monthly);
+  document.getElementById('g-rate-display').textContent=rate.toFixed(1)+'%';
+  document.getElementById('g-period-display').textContent=fmtPeriod(months);
+  const mr=rate/100/12;
+  let total=capital;
+  for(let i=0;i<months;i++)total=total*(1+mr)+monthly;
+  total=Math.round(total);
+  const invested=capital+monthly*months;
+  document.getElementById('g-result').textContent=fmtKoreanUnit(total);
+  document.getElementById('g-total-invest').textContent=fmtKoreanUnit(invested);
+  document.getElementById('g-profit').textContent=fmtKoreanUnit(total-invested);
+}
+
+function saveGoal(){
+  const capital=parseInt(document.getElementById('g-capital').value)*100*10000;
+  const monthly=parseInt(document.getElementById('g-monthly').value)*10*10000;
+  const rate=parseInt(document.getElementById('g-rate').value)/10;
+  const months=parseInt(document.getElementById('g-period').value);
+  const mr=rate/100/12;
+  let target=capital;
+  for(let i=0;i<months;i++)target=target*(1+mr)+monthly;
+  const data=load();
+  data.goal={capital,monthly,rate,months,target:Math.round(target)};
+  save(data);
+  showToast('✅ 목표가 저장되었습니다');
+  switchTab('dashboard',document.querySelector('.tab-btn'));
+}
+
+function saveMonthData(){
+  const year=parseInt(document.getElementById('sel-year').value);
+  const month=parseInt(document.getElementById('sel-month').value);
+  const sv=parseInt(document.getElementById('invest-slider').value);
+  const invest=sv*10*10000;
+  const rateVal=document.getElementById('return-input').value;
+  if(rateVal===''){showToast('⚠️ 수익률을 입력해 주세요');return;}
+  const rate=parseFloat(rateVal);
+  const dateStr=year+'년 '+month+'월';
+  const entry={date:dateStr,year,month,ts:Date.now(),invest,rate};
+  const data=load();
+  if(editingIndex>=0){
+    data.months[editingIndex]=entry;
+    editingIndex=-1;
+    document.getElementById('edit-notice').style.display='none';
+  }else{
+    data.months.push(entry);
+    data.months.sort((a,b)=>a.year!==b.year?a.year-b.year:a.month-b.month);
+  }
+  save(data);
+  showToast('✅ 저장되었습니다');
+  switchTab('dashboard',document.querySelector('.tab-btn'));
+}
+
+function editEntry(idx){
+  const data=load();
+  const entry=data.months[idx];
+  editingIndex=idx;
+  initDateSelects();
+  document.getElementById('sel-year').value=entry.year||(new Date().getFullYear());
+  document.getElementById('sel-month').value=entry.month||(new Date().getMonth()+1);
+  const sv=Math.round(entry.invest/10000/10);
+  document.getElementById('invest-slider').value=sv;
+  updateInvestDisplay(sv);
+  document.getElementById('return-input').value=entry.rate;
+  document.getElementById('edit-notice').style.display='block';
+  const inputBtn=document.querySelectorAll('.tab-btn')[1];
+  switchTab('input',inputBtn);
+}
+
+function deleteEntry(idx){
+  if(!confirm('이 기록을 삭제할까요?'))return;
+  const data=load();
+  data.months.splice(idx,1);
+  save(data);
+  renderHistory();
+  showToast('🗑️ 삭제되었습니다');
+}
+
+function computeOrigPath(goal){
+  const pts=[goal.capital];
+  const mr=goal.rate/100/12;
+  let cur=goal.capital;
+  for(let i=0;i<goal.months;i++){cur=cur*(1+mr)+goal.monthly;pts.push(Math.round(cur));}
+  return pts;
+}
+
+function computeActualPath(goal,months){
+  const pts=[goal.capital];
+  let cur=goal.capital;
+  months.forEach(m=>{cur=cur*(1+m.rate/100)+m.invest;pts.push(Math.round(cur));});
+  return pts;
+}
+
+function computeRevisedMonths(goal,currentAsset){
+  const mr=goal.rate/100/12;
+  const target=goal.target;
+  if(currentAsset>=target)return 0;
+  let cur=currentAsset;
+  let m=0;
+  while(cur<target&&m<600){
+    cur=cur*(1+mr)+goal.monthly;
+    m++;
+  }
+  return m;
+}
+
+function renderDashboard(){
+  const data=load();
+  const goal=data.goal;
+  let months=[...(data.months||[])];
+
+  document.getElementById('no-goal-warn').style.display=goal?'none':'block';
+
+  if(!goal){
+    document.getElementById('dash-pct').textContent='—';
+    document.getElementById('dash-gap').textContent='목표를 먼저 설정해 주세요';
+    document.getElementById('dash-gap').className='gap-badge gap-zero';
+    ['dash-current','dash-orig','dash-invested','dash-profit'].forEach(id=>document.getElementById(id).textContent='—');
+    document.getElementById('revised-info').style.display='none';
+    return;
+  }
+
+  document.getElementById('header-sub').textContent='목표 '+fmtPeriod(goal.months)+' · '+goal.rate.toFixed(1)+'% 수익률';
+
+  const actual=computeActualPath(goal,months);
+  const current=actual[actual.length-1];
+  const totalInvested=goal.capital+months.reduce((s,m)=>s+m.invest,0);
+  const profit=current-totalInvested;
+  const origTarget=goal.target;
+
+  const pct=origTarget>0?Math.round((current/origTarget)*1000)/10:0;
+  const pctClamped=Math.min(100,Math.max(0,pct));
+  const circumference=2*Math.PI*75;
+  const offset=circumference-(circumference*pctClamped/100);
+  document.getElementById('gauge-circle').style.strokeDashoffset=offset;
+  document.getElementById('dash-pct').textContent=pct.toFixed(1)+'%';
+
+  const gap=current-origTarget;
+  const gapEl=document.getElementById('dash-gap');
+  if(gap>=0){
+    gapEl.textContent='목표 금액 달성! 🎉';
+    gapEl.className='gap-badge gap-pos';
+  }else{
+    gapEl.textContent='목표까지 '+fmtExactRaw(Math.abs(gap))+' 남음';
+    gapEl.className='gap-badge gap-neg';
+  }
+
+  // 1번 요청 반영: 무조건 원 단위 전체 숫자로 표기
+  document.getElementById('dash-current').textContent=fmtExactRaw(current);
+  document.getElementById('dash-orig').textContent=fmtExactRaw(origTarget);
+  document.getElementById('dash-invested').textContent=fmtExactRaw(totalInvested);
+  document.getElementById('dash-profit').textContent=(profit>=0?'+':'')+fmtExactRaw(profit);
+  document.getElementById('dash-profit').className='metric-val'+(profit>=0?' amber':' ');
+
+  if(months.length>0){
+    document.getElementById('revised-info').style.display='block';
+    const revisedM=computeRevisedMonths(goal,current);
+    const elapsed=months.length;
+    const newTotal=elapsed+revisedM;
+    const origTotal=goal.months;
+    const diff=newTotal-origTotal;
+    document.getElementById('rv-orig-period').textContent=fmtPeriod(origTotal);
+    document.getElementById('rv-new-period').textContent=fmtPeriod(newTotal);
+    const diffEl=document.getElementById('rv-diff');
+    if(diff>0){
+      diffEl.textContent='+'+fmtPeriod(diff)+' 더 걸림';
+      diffEl.style.color='var(--red)';
+    }else if(diff<0){
+      diffEl.textContent=fmtPeriod(Math.abs(diff))+' 단축 🚀';
+      diffEl.style.color='var(--accent)';
+    }else{
+      diffEl.textContent='예정대로 진행 중';
+      diffEl.style.color='var(--text2)';
+    }
+  }else{
+    document.getElementById('revised-info').style.display='none';
+  }
+
+  // 데이터 경로 구축
+  const origPath=computeOrigPath(goal);
+  const actualData=new Array(goal.months+1).fill(null);
+  actual.forEach((v,i)=>{actualData[i]=v;});
+
+  // 날짜 매핑 레이블 생성
+  const labels=[];
+  const baseDate = months.length > 0 ? new Date(months[0].year, months[0].month - 1) : new Date();
+  
+  for(let i=0;i<=goal.months;i++){
+    let targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + (i - 1));
+    let labelStr = targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월';
+    if(i===0) labelStr = '시작';
+    
+    // 💡 X축 메인 격자 축약 노출 조건
+    if(i===0){labels.push('시작');}
+    else if(goal.months<=24){labels.push(i%3===0? fmtShortDate(labelStr) : '');}
+    else{labels.push(i%12===0? targetDate.getFullYear()+'년' : '');}
+  }
+
+  if(chartObj){chartObj.destroy();chartObj=null;}
+  const ctx=document.getElementById('mainChart').getContext('2d');
+  
+  chartObj=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {type:'line',label:'초기 목표',data:origPath,borderColor:'#4ade9a',backgroundColor:'transparent',borderWidth:2.5,pointRadius:0,tension:0.35,order:1},
+        {type:'bar',label:'실제 자산',data:actualData,backgroundColor:'rgba(91,143,255,0.7)',borderRadius:3,order:2}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false}, // Cross 시각화를 위해 인덱스 기준 교차 활성화
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          enabled:true,
+          backgroundColor:'rgba(24, 28, 39, 0.95)',
+          titleColor:'#eef0f8',
+          bodyColor:'#8b90a8',
+          borderColor:'rgba(255,255,255,0.1)',
+          borderWidth:1,
+          padding:12,
+          callbacks:{
+            // 3번 요청 반영: 교차 지점에 날짜 / 목표 / 실제 / 차액 / 달성률 연동 안내창 커스터마이징
+            title: function(context) {
+              const idx = context[0].dataIndex;
+              if(idx === 0) return '🏁 투자 시작 시점';
+              if(months[idx-1]) {
+                return '📅 ' + fmtShortDate(months[idx-1].date);
+              }
+              let targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + (idx - 1));
+              return '📅 ' + fmtShortDate(targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월');
+            },
+            label: function(context) {
+              const idx = context.dataIndex;
+              const goalVal = origPath[idx] || 0;
+              const actVal = actualData[idx];
+              
+              if(context.dataset.type === 'line') {
+                return '• 목표 금액: ' + fmtKoreanUnit(goalVal);
+              } else {
+                if(actVal === null || actVal === undefined) return '• 실제 금액: 기록 없음';
+                const diffVal = actVal - goalVal;
+                const progress = goalVal > 0 ? ((actVal / goalVal) * 100).toFixed(1) : '0.0';
+                const diffStr = diffVal >= 0 ? '+' + fmtKoreanUnit(diffVal) : '-' + fmtKoreanUnit(Math.abs(diffVal));
+                
+                return [
+                  '• 실제 금액: ' + fmtKoreanUnit(actVal),
+                  '• 차액 표시: ' + diffStr,
+                  '• 목표 대비 달성률: ' + progress + '%'
+                ];
+              }
+            }
+          }
+        }
+      },
+      scales:{
+        x:{
+          grid:{color:'rgba(255,255,255,0.05)'},
+          ticks:{color:'#555a72',font:{size:10},maxRotation:0,autoSkip:false}
+        },
+        y:{
+          grid:{color:'rgba(255,255,255,0.05)'},
+          ticks:{
+            color:'#555a72',
+            font:{size:10},
+            // 2번 요청 반영: 5000만이 아니라 '5천만', '1억' 단위 매핑 처리
+            callback: function(value) {
+              if (value === 0) return '0';
+              if (value >= 100000000) {
+                const eok = value / 100000000;
+                return eok.toFixed(1).replace('.0', '') + '억';
+              }
+              if (value >= 10000) {
+                return (value / 10000).toLocaleString() + '만';
+              }
+              return value;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderHistory(){
+  const data=load();
+  const months=data.months||[];
+  const listEl=document.getElementById('history-list');
+  const emptyEl=document.getElementById('history-empty');
+  if(months.length===0){emptyEl.style.display='block';listEl.innerHTML='';return;}
+  emptyEl.style.display='none';
+  listEl.innerHTML=[...months].reverse().map((m,ri)=>{
+    const idx=months.length-1-ri;
+    const rc=m.rate>0?'pos':m.rate<0?'neg':'zero';
+    const rs=m.rate>0?'+':'';
+    return`<div class="history-item">
+      <div class="hi-left">
+        <div class="hi-date">${m.date}</div>
+        <div class="hi-invest">${m.invest===0?'추가 납입 없음':'+'+fmtExactRaw(m.invest)}</div>
+      </div>
+      <div class="hi-right">
+        <div class="hi-rate ${rc}">${rs}${m.rate}%</div>
+        <div class="hi-actions">
+          <button class="btn-secondary" onclick="editEntry(${idx})">✏️ 수정</button>
+          <button class="btn-secondary" onclick="deleteEntry(${idx})">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+updateGoalDisplay();
+initDateSelects();
+renderDashboard();
+</script>
+</body>
+</html>
