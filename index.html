@@ -104,4 +104,205 @@
   .empty-state{text-align:center;padding:48px 20px;color:var(--text3);}
   .empty-state svg{width:40px;height:40px;stroke:var(--text3);fill:none;stroke-width:1.5;margin-bottom:12px;}
   .empty-state p{font-size:14px;line-height:1.6;}
-  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border2);border-radius:999px;padding:
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border2);border-radius:999px;padding:10px 22px;font-size:13px;color:var(--text);white-space:nowrap;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:200;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .no-goal-warn{background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--amber);margin-bottom:16px;}
+  
+  .revised-info{background:rgba(91,143,255,0.08);border:1px solid rgba(91,143,255,0.2);border-radius:var(--radius);padding:14px 16px;margin-top:10px;}
+  .revised-info .ri-title{font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;}
+  .revised-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;}
+  .revised-row .rr-label{font-size:13px;color:var(--text2);}
+  .revised-row .rr-val{font-family:var(--mono);font-size:14px;color:var(--blue);}
+  .date-select-wrap { display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:10px; }
+  select.date-select { background:var(--bg); border:1px solid var(--border2); border-radius:var(--radius-sm); padding:10px 12px; font-family:var(--font); font-size:15px; color:var(--text); outline:none; width:100%; -webkit-appearance:none; appearance:none; cursor:pointer; }
+  select.date-select:focus { border-color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div>
+      <h1>투자 목표 트래커</h1>
+      <div class="header-sub" id="header-sub">목표를 설정해 주세요</div>
+    </div>
+  </div>
+
+  <div class="page active" id="page-dashboard">
+    <div id="no-goal-warn" class="no-goal-warn" style="display:none;margin-top:16px;">⚙️ 목표 탭에서 먼저 초기 목표를 설정해 주세요.</div>
+    <div class="gauge-wrap">
+      <div class="gauge-ring">
+        <svg width="180" height="180" viewBox="0 0 180 180">
+          <circle cx="90" cy="90" r="75" fill="none" stroke="#1e2333" stroke-width="14"/>
+          <circle id="gauge-circle" cx="90" cy="90" r="75" fill="none" stroke="#4ade9a" stroke-width="14"
+            stroke-dasharray="471.24" stroke-dashoffset="471.24" stroke-linecap="round"/>
+        </svg>
+        <div class="gauge-center">
+          <div class="gauge-pct" id="dash-pct">—</div>
+          <div class="gauge-label">달성률</div>
+        </div>
+      </div>
+      <div class="gap-badge gap-zero" id="dash-gap">목표를 설정해 주세요</div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-label">현재 자산</div>
+        <div class="metric-val accent" id="dash-current">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">목표 금액</div>
+        <div class="metric-val" id="dash-orig">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">총 납입금</div>
+        <div class="metric-val blue" id="dash-invested">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">누적 수익</div>
+        <div class="metric-val amber" id="dash-profit">—</div>
+      </div>
+    </div>
+
+    <div class="revised-info" id="revised-info" style="display:none;">
+      <div class="ri-title">📅 수정 목표 (기간 재계산)</div>
+      <div class="revised-row">
+        <span class="rr-label">원래 목표 기간</span>
+        <span class="rr-val" id="rv-orig-period">—</span>
+      </div>
+      <div class="revised-row">
+        <span class="rr-label">현재 페이스 기준</span>
+        <span class="rr-val" id="rv-new-period">—</span>
+      </div>
+      <div class="revised-row">
+        <span class="rr-label">기간 차이</span>
+        <span class="rr-val" id="rv-diff">—</span>
+      </div>
+    </div>
+
+    <div class="section-title">자산 비교</div>
+    <div class="chart-card">
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#4ade9a"></div>초기 목표</div>
+        <div class="legend-item"><div class="legend-sq" style="background:#5b8fff"></div>실제 자산</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="mainChart" role="img" aria-label="초기목표와 실제자산 비교 차트">자산 비교 차트</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-input">
+    <div class="edit-notice" id="edit-notice">✏️ 이전 기록을 수정 중입니다</div>
+
+    <div class="section-title" style="margin-top:4px;">날짜 선택</div>
+    <div class="input-card">
+      <div class="date-select-wrap">
+        <select class="date-select" id="sel-year"></select>
+        <select class="date-select" id="sel-month"></select>
+      </div>
+    </div>
+
+    <div class="section-title">3개 계좌 잔고 및 추가 투자금 입력</div>
+    
+    <div class="account-group">
+      <div class="account-title">💳 토스 증권계좌</div>
+      <div class="account-row">
+        <div class="input-sub-box">
+          <label>이번 달 최종 잔고 (원)</label>
+          <input type="number" class="number-input ac-asset" id="ac1-asset" placeholder="예: 50000000" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac1-asset-hint">0원</div>
+        </div>
+        <div class="input-sub-box">
+          <label>이번 달 저축·입금액 (원)</label>
+          <input type="number" class="number-input ac-invest" id="ac1-invest" placeholder="없으면 0" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac1-invest-hint">0원</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="account-group">
+      <div class="account-title">💳 한투 증권계좌</div>
+      <div class="account-row">
+        <div class="input-sub-box">
+          <label>이번 달 최종 잔고 (원)</label>
+          <input type="number" class="number-input ac-asset" id="ac2-asset" placeholder="예: 30000000" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac2-asset-hint">0원</div>
+        </div>
+        <div class="input-sub-box">
+          <label>이번 달 저축·입금액 (원)</label>
+          <input type="number" class="number-input ac-invest" id="ac2-invest" placeholder="없으면 0" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac2-invest-hint">0원</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="account-group">
+      <div class="account-title">💳 미래 증권계좌</div>
+      <div class="account-row">
+        <div class="input-sub-box">
+          <label>이번 달 최종 잔고 (원)</label>
+          <input type="number" class="number-input ac-asset" id="ac3-asset" placeholder="예: 20000000" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac3-asset-hint">0원</div>
+        </div>
+        <div class="input-sub-box">
+          <label>이번 달 저축·입금액 (원)</label>
+          <input type="number" class="number-input ac-invest" id="ac3-invest" placeholder="없으면 0" oninput="liveRecalculate()">
+          <div class="input-hint" id="ac3-invest-hint">0원</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">📊 이번 달 계산 결과 (자동)</div>
+    <div class="calc-result-box">
+      <div class="calc-row">
+        <span class="cr-label">총 합산 자산 금액</span>
+        <span class="cr-val" id="res-total-asset" style="color:var(--text);">0원</span>
+      </div>
+      <div class="calc-row">
+        <span class="cr-label">총 추가 투자금 (합산)</span>
+        <span class="cr-val" id="res-total-invest" style="color:var(--blue);">0원</span>
+      </div>
+      <div class="calc-row" style="margin-top:4px; padding-top:10px; border-top:1px solid var(--border);">
+        <span class="cr-label" style="font-weight:700;">역산된 실제 수익률</span>
+        <span class="cr-val" id="res-calc-rate" style="color:var(--accent); font-size:16px; font-weight:700;">0.0%</span>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="saveMonthData()">💾 저장하기</button>
+  </div>
+
+  <div class="page" id="page-goal">
+    <div class="section-title" style="margin-top:4px;">📅 투자 시작 시점 설정</div>
+    <div class="slider-card" style="padding: 14px 16px;">
+      <div class="date-select-wrap" style="margin-bottom:0;">
+        <select class="date-select" id="g-start-year" onchange="updateGoalDisplay()"></select>
+        <select class="date-select" id="g-start-month" onchange="updateGoalDisplay()"></select>
+      </div>
+    </div>
+
+    <div class="section-title">목표 파라미터</div>
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">초기 자본금</span><span class="slider-val" id="g-capital-display">0원</span></div>
+      <input type="range" id="g-capital" min="0" max="100" step="1" value="0" oninput="updateGoalDisplay()">
+      <div class="slider-minmax"><span>0원</span><span>1억원</span></div>
+    </div>
+    
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">첫 월 납입 시작 시점</span><span class="slider-val" id="g-delay-display">즉시 납입</span></div>
+      <input type="range" id="g-delay" min="0" max="6" step="1" value="0" oninput="updateGoalDisplay()">
+      <div class="slider-minmax"><span>즉시 납입</span><span>6개월 뒤부터</span></div>
+    </div>
+
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">월 납입금 (본격 투자시)</span><span class="slider-val" id="g-monthly-display">0원</span></div>
+      <input type="range" id="g-monthly" min="0" max="50" step="1" value="0" oninput="updateGoalDisplay()">
+      <div class="slider-minmax"><span>0원</span><span>500만원</span></div>
+    </div>
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">연평균 목표 수익률</span><span class="slider-val" id="g-rate-display">0.0%</span></div>
+      <input type="range" id="g-rate" min="0" max="200" step="1" value="0" oninput="updateGoalDisplay()">
+      <div class="slider-minmax"><span>0%</span><span>20%</span></div>
+    </div>
+    <div class="slider-card">
+      <div class="slider-header"><span class="slider-name">총 목표 투자 기간</span><span class="slider-val" id="g-period-display">1개월</span></div>
+      <input type="range" id="g-period" min="1" max="120" step="1" value="12" oninput="updateGoalDisplay()">
