@@ -2,9 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<!-- 구형 apple 전용 태그 제거 및 최신 표준 모바일 웹 앱 태그 적용 -->
+<meta name="mobile-web-app-capable" content="yes">
 <title>투자 목표 트래커</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -127,6 +127,7 @@
     </div>
   </div>
 
+  <!-- 대시보드 -->
   <div class="page active" id="page-dashboard">
     <div id="no-goal-warn" class="no-goal-warn" style="display:none;margin-top:16px;">⚙️ 목표 탭에서 먼저 초기 목표를 설정해 주세요.</div>
     <div class="gauge-wrap">
@@ -163,6 +164,7 @@
       </div>
     </div>
 
+    <!-- 수정 목표 (기간 기준) -->
     <div class="revised-info" id="revised-info" style="display:none;">
       <div class="ri-title">📅 수정 목표 (기간 재계산)</div>
       <div class="revised-row">
@@ -191,6 +193,7 @@
     </div>
   </div>
 
+  <!-- 월 데이터 입력 -->
   <div class="page" id="page-input">
     <div class="edit-notice" id="edit-notice">✏️ 이전 기록을 수정 중입니다</div>
 
@@ -204,6 +207,7 @@
 
     <div class="section-title">3개 계좌 잔고 및 추가 투자금 입력</div>
     
+    <!-- 계좌 1: 토스 -->
     <div class="account-group">
       <div class="account-title">💳 토스 증권계좌</div>
       <div class="account-row">
@@ -220,6 +224,7 @@
       </div>
     </div>
 
+    <!-- 계좌 2: 한투 -->
     <div class="account-group">
       <div class="account-title">💳 한투 증권계좌</div>
       <div class="account-row">
@@ -236,6 +241,7 @@
       </div>
     </div>
 
+    <!-- 계좌 3: 미래 -->
     <div class="account-group">
       <div class="account-title">💳 미래 증권계좌</div>
       <div class="account-row">
@@ -271,6 +277,7 @@
     <button class="btn-primary" onclick="saveMonthData()">💾 저장하기</button>
   </div>
 
+  <!-- 목표 설정 -->
   <div class="page" id="page-goal">
     <div class="section-title" style="margin-top:4px;">📅 투자 시작 시점 설정</div>
     <div class="slider-card" style="padding: 14px 16px;">
@@ -306,3 +313,638 @@
     <div class="slider-card">
       <div class="slider-header"><span class="slider-name">총 목표 투자 기간</span><span class="slider-val" id="g-period-display">1개월</span></div>
       <input type="range" id="g-period" min="1" max="120" step="1" value="12" oninput="updateGoalDisplay()">
+      <div class="slider-minmax"><span>1개월</span><span>10년</span></div>
+    </div>
+    
+    <div class="result-banner">
+      <div class="rb-label" id="g-result-label">최종 목표 금액</div>
+      <div class="rb-val" id="g-result">0원</div>
+      <div class="result-sub-grid">
+        <div class="result-sub"><div class="rs-label">총 실납입 금액</div><div class="rs-val" id="g-total-invest">0원</div></div>
+        <div class="result-sub"><div class="rs-label">예상 복리 수익</div><div class="rs-val" id="g-profit">0원</div></div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="saveGoal()" style="margin-top:14px;">목표 저장하기</button>
+  </div>
+
+  <!-- 기록 -->
+  <div class="page" id="page-history">
+    <div class="section-title" style="margin-top:4px;">월별 기록</div>
+    <div id="history-empty" class="empty-state">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      <p>아직 기록이 없어요.<br>월 데이터를 입력해 보세요!</p>
+    </div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<nav class="tabbar">
+  <button class="tab-btn active" onclick="switchTab('dashboard',this)">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    대시보드
+  </button>
+  <button class="tab-btn" onclick="switchTab('input',this)">
+    <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    월 입력
+  </button>
+  <button class="tab-btn" onclick="switchTab('goal',this)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>
+    목표 설정
+  </button>
+  <button class="tab-btn" onclick="switchTab('history',this)">
+    <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+    기록
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY='invest_tracker_v2';
+let editingIndex=-1;
+let chartObj=null;
+
+function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{goal:null,months:[]};}catch(e){return{goal:null,months:[]};}}
+function save(data){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}}
+
+function fmtExactRaw(n) { return Math.round(n).toLocaleString() + '원'; }
+
+function fmtKoreanUnit(n) {
+  n = Math.round(n);
+  if (n >= 100000000) {
+    const eok = Math.floor(n / 100000000);
+    const remain = Math.round((n % 100000000) / 10000);
+    return eok + '억' + (remain > 0 ? ' ' + remain.toLocaleString() + '만' : '') + '원';
+  }
+  if (n >= 10000) return Math.round(n / 10000).toLocaleString() + '만원';
+  return n.toLocaleString() + '원';
+}
+
+function fmtPeriod(months){
+  months=Math.round(months);
+  const yr=Math.floor(months/12),mo=months%12;
+  if(yr>0&&mo>0)return yr+'년 '+mo+'개월';
+  if(yr>0)return yr+'년';
+  return mo+'개월';
+}
+
+function fmtShortDate(dateStr) {
+  if(!dateStr) return '';
+  const match = dateStr.match(/(\d{2})(\d{2})년\s*(\d+)월/);
+  if(match) return match[2] + '.' + match[3] + '월';
+  return dateStr.replace('년 ', '.').replace('월', '월');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function initDateSelects(){
+  const now=new Date();
+  
+  const ySel=document.getElementById('sel-year');
+  const mSel=document.getElementById('sel-month');
+  ySel.innerHTML='';
+  for(let y=now.getFullYear()-2;y<=now.getFullYear()+4;y++){
+    const o=document.createElement('option'); o.value=y; o.textContent=y+'년';
+    if(y===now.getFullYear())o.selected=true;
+    ySel.appendChild(o);
+  }
+  mSel.innerHTML='';
+  for(let m=1;m<=12;m++){
+    const o=document.createElement('option'); o.value=m; o.textContent=m+'월';
+    if(m===now.getMonth()+1)o.selected=true;
+    mSel.appendChild(o);
+  }
+
+  const gySel=document.getElementById('g-start-year');
+  const gmSel=document.getElementById('g-start-month');
+  gySel.innerHTML=''; gmSel.innerHTML='';
+  for(let y=now.getFullYear()-1;y<=now.getFullYear()+3;y++){
+    const o=document.createElement('option'); o.value=y; o.textContent=y+'년';
+    if(y===now.getFullYear())o.selected=true;
+    gySel.appendChild(o);
+  }
+  for(let m=1;m<=12;m++){
+    const o=document.createElement('option'); o.value=m; o.textContent=m+'월';
+    if(m===now.getMonth()+1)o.selected=true;
+    gmSel.appendChild(o);
+  }
+  
+  const data = load();
+  if(data.goal && data.goal.startYear && data.goal.startMonth) {
+    gySel.value = data.goal.startYear;
+    gmSel.value = data.goal.startMonth;
+  }
+}
+
+function switchTab(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='dashboard')renderDashboard();
+  if(name==='history')renderHistory();
+  if(name==='input'&&editingIndex<0){resetInputForm();}
+  window.scrollTo(0,0);
+}
+
+function resetInputForm(){
+  initDateSelects();
+  ['ac1','ac2','ac3'].forEach(id => {
+    document.getElementById(id+'-asset').value = '';
+    document.getElementById(id+'-invest').value = '';
+    document.getElementById(id+'-asset-hint').textContent = '0원';
+    document.getElementById(id+'-invest-hint').textContent = '0원';
+  });
+  document.getElementById('res-total-asset').textContent = '0원';
+  document.getElementById('res-total-invest').textContent = '0원';
+  document.getElementById('res-calc-rate').textContent = '0.0%';
+  document.getElementById('edit-notice').style.display='none';
+  editingIndex=-1;
+}
+
+function updateGoalDisplay(){
+  const startYear=parseInt(document.getElementById('g-start-year').value) || new Date().getFullYear();
+  const startMonth=parseInt(document.getElementById('g-start-month').value) || (new Date().getMonth()+1);
+  const capital=parseInt(document.getElementById('g-capital').value)*100*10000;
+  const delayMonths=parseInt(document.getElementById('g-delay').value);
+  const monthly=parseInt(document.getElementById('g-monthly').value)*10*10000;
+  const rate=parseInt(document.getElementById('g-rate').value)/10;
+  const totalMonths=parseInt(document.getElementById('g-period').value);
+  
+  document.getElementById('g-capital-display').textContent=fmtKoreanUnit(capital);
+  document.getElementById('g-delay-display').textContent=delayMonths === 0 ? '즉시 납입' : delayMonths + '개월 뒤부터';
+  document.getElementById('g-monthly-display').textContent=monthly===0?'0원':fmtKoreanUnit(monthly);
+  document.getElementById('g-rate-display').textContent=rate.toFixed(1)+'%';
+  document.getElementById('g-period-display').textContent=fmtPeriod(totalMonths);
+  
+  const mr=rate/100/12;
+  let total=capital;
+  let accumulatedInvest = capital;
+
+  for(let i=1; i<=totalMonths; i++){
+    const currentMonthlyInvest = (i > delayMonths) ? monthly : 0;
+    total = total * (1 + mr) + currentMonthlyInvest;
+    accumulatedInvest += currentMonthlyInvest;
+  }
+  
+  const baseDate = new Date(startYear, startMonth - 1);
+  const endDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + totalMonths);
+  const endYearStr = endDate.getFullYear();
+  const endMonthStr = endDate.getMonth() + 1;
+  
+  document.getElementById('g-result-label').textContent = `최종 목표 금액 (${endYearStr}년 ${endMonthStr}월 기준)`;
+  
+  total=Math.round(total);
+  document.getElementById('g-result').textContent=fmtKoreanUnit(total);
+  document.getElementById('g-total-invest').textContent=fmtKoreanUnit(accumulatedInvest);
+  document.getElementById('g-profit').textContent=fmtKoreanUnit(total-accumulatedInvest);
+}
+
+function saveGoal(){
+  const startYear=parseInt(document.getElementById('g-start-year').value);
+  const startMonth=parseInt(document.getElementById('g-start-month').value);
+  const capital=parseInt(document.getElementById('g-capital').value)*100*10000;
+  const delayMonths=parseInt(document.getElementById('g-delay').value);
+  const monthly=parseInt(document.getElementById('g-monthly').value)*10*10000;
+  const rate=parseInt(document.getElementById('g-rate').value)/10;
+  const totalMonths=parseInt(document.getElementById('g-period').value);
+  
+  const mr=rate/100/12;
+  let target=capital;
+  for(let i=1;i<=totalMonths;i++){
+    const currentMonthlyInvest = (i > delayMonths) ? monthly : 0;
+    target=target*(1+mr)+currentMonthlyInvest;
+  }
+  
+  const data=load();
+  data.goal={
+    startYear, startMonth, capital, delayMonths, monthly, rate, months:totalMonths, target:Math.round(target)
+  };
+  save(data);
+  showToast('✅ 목표 시뮬레이션 정보가 저장되었습니다');
+  switchTab('dashboard',document.querySelector('.tab-btn'));
+}
+
+function getPreviousAssetAmount(data, targetIdx) {
+  const goal = data.goal;
+  let cur = goal.capital;
+  for(let i=0; i<targetIdx; i++) {
+    const m = data.months[i];
+    cur = cur * (1 + m.rate/100) + m.invest;
+  }
+  return cur;
+}
+
+function liveRecalculate() {
+  const data = load();
+  if(!data.goal) return;
+
+  let totalAsset = 0;
+  let totalInvest = 0;
+
+  ['ac1', 'ac2', 'ac3'].forEach(id => {
+    const assetVal = parseFloat(document.getElementById(id+'-asset').value) || 0;
+    const investVal = parseFloat(document.getElementById(id+'-invest').value) || 0;
+    
+    document.getElementById(id+'-asset-hint').textContent = assetVal > 0 ? fmtKoreanUnit(assetVal) : '0원';
+    document.getElementById(id+'-invest-hint').textContent = investVal > 0 ? fmtKoreanUnit(investVal) : '0원';
+    
+    totalAsset += assetVal;
+    totalInvest += investVal;
+  });
+
+  document.getElementById('res-total-asset').textContent = fmtExactRaw(totalAsset);
+  document.getElementById('res-total-invest').textContent = fmtExactRaw(totalInvest);
+
+  const year = parseInt(document.getElementById('sel-year').value);
+  const month = parseInt(document.getElementById('sel-month').value);
+  
+  let monthsCopy = [...data.months];
+  let currentIdx = editingIndex;
+  
+  if(currentIdx < 0) {
+    let existIdx = monthsCopy.findIndex(m => m.year === year && m.month === month);
+    if(existIdx >= 0) {
+      currentIdx = existIdx;
+    } else {
+      monthsCopy.push({year, month});
+      monthsCopy.sort((a,b)=>a.year!==b.year?a.year-b.year:a.month-b.month);
+      currentIdx = monthsCopy.findIndex(m => m.year === year && m.month === month);
+    }
+  }
+
+  const prevAsset = getPreviousAssetAmount(data, currentIdx);
+  
+  let rate = 0;
+  if(prevAsset > 0 && totalAsset > 0) {
+    rate = ((totalAsset - totalInvest) / prevAsset - 1) * 100;
+  }
+  
+  const rateEl = document.getElementById('res-calc-rate');
+  rateEl.textContent = (rate >= 0 ? '+' : '') + rate.toFixed(1) + '%';
+  rateEl.style.color = rate > 0 ? 'var(--accent)' : (rate < 0 ? 'var(--red)' : 'var(--text3)');
+}
+
+document.getElementById('sel-year').addEventListener('change', liveRecalculate);
+document.getElementById('sel-month').addEventListener('change', liveRecalculate);
+
+function saveMonthData(){
+  const data=load();
+  if(!data.goal){showToast('⚠️ 목표 설정을 먼저 완료해 주세요.'); return;}
+
+  const year=parseInt(document.getElementById('sel-year').value);
+  const month=parseInt(document.getElementById('sel-month').value);
+  
+  const ac1Asset = parseFloat(document.getElementById('ac1-asset').value) || 0;
+  const ac1Invest = parseFloat(document.getElementById('ac1-invest').value) || 0;
+  const ac2Asset = parseFloat(document.getElementById('ac2-asset').value) || 0;
+  const ac2Invest = parseFloat(document.getElementById('ac2-invest').value) || 0;
+  const ac3Asset = parseFloat(document.getElementById('ac3-asset').value) || 0;
+  const ac3Invest = parseFloat(document.getElementById('ac3-invest').value) || 0;
+
+  const finalAsset = ac1Asset + ac2Asset + ac3Asset;
+  const invest = ac1Invest + ac2Invest + ac3Invest;
+  
+  if(finalAsset === 0){showToast('⚠️ 최소 한 개 계좌의 잔고를 입력해 주세요'); return;}
+  
+  const dateStr=year+'년 '+month+'월';
+  
+  let tempEntry={
+    date:dateStr,year,month,ts:Date.now(),
+    invest, rate:0, finalAsset,
+    breakdown: { ac1Asset, ac1Invest, ac2Asset, ac2Invest, ac3Asset, ac3Invest }
+  };
+  
+  let targetIdx = editingIndex;
+  if(targetIdx >= 0) {
+    data.months[targetIdx] = tempEntry;
+  } else {
+    data.months.push(tempEntry);
+  }
+  
+  data.months.sort((a,b)=>a.year!==b.year?a.year-b.year:a.month-b.month);
+  
+  if(targetIdx < 0) {
+    targetIdx = data.months.findIndex(m => m.year === year && m.month === month);
+  }
+
+  const prevAsset = getPreviousAssetAmount(data, targetIdx);
+  let calculatedRate = 0;
+  if(prevAsset > 0) {
+    calculatedRate = ((finalAsset - invest) / prevAsset - 1) * 100;
+  }
+  
+  data.months[targetIdx].rate = Math.round(calculatedRate * 10) / 10;
+  
+  if(editingIndex >= 0) {
+    for(let i = targetIdx + 1; i < data.months.length; i++) {
+      let pAs = getPreviousAssetAmount(data, i);
+      if(pAs > 0) {
+        let r = ((data.months[i].finalAsset - data.months[i].invest) / pAs - 1) * 100;
+        data.months[i].rate = Math.round(r * 10) / 10;
+      }
+    }
+  }
+
+  editingIndex=-1;
+  document.getElementById('edit-notice').style.display='none';
+  
+  save(data);
+  showToast('✅ 분할 계좌 기록이 정상 저장되었습니다');
+  switchTab('dashboard',document.querySelector('.tab-btn'));
+}
+
+function editEntry(idx){
+  const data=load();
+  const entry=data.months[idx];
+  editingIndex=idx;
+  initDateSelects();
+  
+  document.getElementById('sel-year').value=entry.year;
+  document.getElementById('sel-month').value=entry.month;
+  
+  const b = entry.breakdown || {
+    ac1Asset: entry.finalAsset, ac1Invest: entry.invest,
+    ac2Asset: 0, ac2Invest: 0, ac3Asset: 0, ac3Invest: 0
+  };
+
+  document.getElementById('ac1-asset').value = b.ac1Asset || '';
+  document.getElementById('ac1-invest').value = b.ac1Invest || '';
+  document.getElementById('ac2-asset').value = b.ac2Asset || '';
+  document.getElementById('ac2-invest').value = b.ac2Invest || '';
+  document.getElementById('ac3-asset').value = b.ac3Asset || '';
+  document.getElementById('ac3-invest').value = b.ac3Invest || '';
+  
+  document.getElementById('edit-notice').style.display='block';
+  const inputBtn=document.querySelectorAll('.tab-btn')[1];
+  switchTab('input',inputBtn);
+  liveRecalculate();
+}
+
+function deleteEntry(idx){
+  if(!confirm('이 기록을 삭제할까요?'))return;
+  const data=load();
+  data.months.splice(idx,1);
+  
+  for(let i = idx; i < data.months.length; i++) {
+    let pAs = getPreviousAssetAmount(data, i);
+    if(pAs > 0 && data.months[i].finalAsset) {
+      let r = ((data.months[i].finalAsset - data.months[i].invest) / pAs - 1) * 100;
+      data.months[i].rate = Math.round(r * 10) / 10;
+    }
+  }
+  
+  save(data);
+  renderHistory();
+  showToast('🗑️ 삭제되었습니다');
+}
+
+function computeOrigPath(goal){
+  const pts=[goal.capital];
+  const mr=goal.rate/100/12;
+  let cur=goal.capital;
+  const delay = goal.delayMonths || 0;
+  for(let i=1; i<=goal.months; i++){
+    const currentMonthlyInvest = (i > delay) ? goal.monthly : 0;
+    cur=cur*(1+mr)+currentMonthlyInvest;
+    pts.push(Math.round(cur));
+  }
+  return pts;
+}
+
+function computeActualPath(goal,months){
+  const pts=[goal.capital];
+  let cur=goal.capital;
+  months.forEach(m=>{
+    cur=cur*(1+m.rate/100)+m.invest;
+    pts.push(Math.round(cur));
+  });
+  return pts;
+}
+
+function computeRevisedMonths(goal,currentAsset,elapsedMonths){
+  const mr=goal.rate/100/12;
+  const target=goal.target;
+  if(currentAsset>=target)return 0;
+  let cur=currentAsset;
+  let m=0;
+  const delay = goal.delayMonths || 0;
+  
+  while(cur<target&&m<600){
+    const absoluteMonthIdx = elapsedMonths + m + 1;
+    const currentMonthlyInvest = (absoluteMonthIdx > delay) ? goal.monthly : 0;
+    cur=cur*(1+mr)+currentMonthlyInvest;
+    m++;
+  }
+  return m;
+}
+
+function renderDashboard(){
+  const data=load();
+  const goal=data.goal;
+  let months=[...(data.months||[])];
+
+  document.getElementById('no-goal-warn').style.display=goal?'none':'block';
+
+  if(!goal){
+    document.getElementById('dash-pct').textContent='—';
+    document.getElementById('dash-gap').textContent='목표를 먼저 설정해 주세요';
+    document.getElementById('dash-gap').className='gap-badge gap-zero';
+    ['dash-current','dash-orig','dash-invested','dash-profit'].forEach(id=>document.getElementById(id).textContent='—');
+    document.getElementById('revised-info').style.display='none';
+    return;
+  }
+
+  document.getElementById('header-sub').textContent='목표 '+fmtPeriod(goal.months)+' · '+goal.rate.toFixed(1)+'% 수익률';
+
+  const actual=computeActualPath(goal,months);
+  const current=actual[actual.length-1];
+  const totalInvested=goal.capital+months.reduce((s,m)=>s+m.invest,0);
+  const profit=current-totalInvested;
+  const origTarget=goal.target;
+
+  const pct=origTarget>0?Math.round((current/origTarget)*1000)/10:0;
+  const pctClamped=Math.min(100,Math.max(0,pct));
+  const circumference=2*Math.PI*75;
+  const offset=circumference-(circumference*pctClamped/100);
+  document.getElementById('gauge-circle').style.strokeDashoffset=offset;
+  document.getElementById('dash-pct').textContent=pct.toFixed(1)+'%';
+
+  const gap=current-origTarget;
+  const gapEl=document.getElementById('dash-gap');
+  if(gap>=0){
+    gapEl.textContent='목표 금액 달성! 🎉';
+    gapEl.className='gap-badge gap-pos';
+  }else{
+    gapEl.textContent='목표까지 '+fmtExactRaw(Math.abs(gap))+' 남음';
+    gapEl.className='gap-badge gap-neg';
+  }
+
+  document.getElementById('dash-current').textContent=fmtExactRaw(current);
+  document.getElementById('dash-orig').textContent=fmtExactRaw(origTarget);
+  document.getElementById('dash-invested').textContent=fmtExactRaw(totalInvested);
+  document.getElementById('dash-profit').textContent=(profit>=0?'+':'')+fmtExactRaw(profit);
+  document.getElementById('dash-profit').className='metric-val'+(profit>=0?' amber':' ');
+
+  if(months.length>0){
+    document.getElementById('revised-info').style.display='block';
+    const revisedM=computeRevisedMonths(goal,current,months.length);
+    const elapsed=months.length;
+    const newTotal=elapsed+revisedM;
+    const origTotal=goal.months;
+    const diff=newTotal-origTotal;
+    document.getElementById('rv-orig-period').textContent=fmtPeriod(origTotal);
+    document.getElementById('rv-new-period').textContent=fmtPeriod(newTotal);
+    const diffEl=document.getElementById('rv-diff');
+    if(diff>0){
+      diffEl.textContent='+'+fmtPeriod(diff)+' 더 걸림';
+      diffEl.style.color='var(--red)';
+    }else if(diff<0){
+      diffEl.textContent=fmtPeriod(Math.abs(diff))+' 단축 🚀';
+      diffEl.style.color='var(--accent)';
+    }else{
+      diffEl.textContent='예정대로 진행 중';
+      diffEl.style.color='var(--text2)';
+    }
+  }else{
+    document.getElementById('revised-info').style.display='none';
+  }
+
+  const origPath=computeOrigPath(goal);
+  const actualData = new Array(goal.months + 1).fill(null);
+  actual.forEach((v,i)=>{actualData[i]=v;});
+
+  const labels=[];
+  const baseYear = goal.startYear || new Date().getFullYear();
+  const baseMonth = goal.startMonth || (new Date().getMonth() + 1);
+  const baseDate = new Date(baseYear, baseMonth - 1);
+  
+  for(let i=0;i<=goal.months;i++){
+    let targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + i);
+    let labelStr = targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월';
+    if(i===0) labelStr = '시작 (' + (targetDate.getMonth() + 1) + '월)';
+    
+    if(i===0){labels.push(labelStr);}
+    else if(goal.months<=24){labels.push(i%3===0? fmtShortDate(labelStr) : '');}
+    else{labels.push(i%12===0? targetDate.getFullYear()+'년' : '');}
+  }
+
+  if(chartObj){chartObj.destroy();chartObj=null;}
+  const ctx=document.getElementById('mainChart').getContext('2d');
+  
+  chartObj=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {type:'line',label:'초기 목표',data:origPath,borderColor:'#4ade9a',backgroundColor:'transparent',borderWidth:2.5,pointRadius:0,tension:0.15,order:1},
+        {type:'bar',label:'실제 자산',data:actualData,backgroundColor:'rgba(91,143,255,0.7)',borderRadius:3,order:2}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          enabled:true,
+          backgroundColor:'rgba(24, 28, 39, 0.95)',
+          titleColor:'#eef0f8',
+          bodyColor:'#8b90a8',
+          borderColor:'rgba(255,255,255,0.1)',
+          borderWidth:1,
+          padding:12,
+          callbacks:{
+            title: function(context) {
+              const idx = context[0].dataIndex;
+              let targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + idx);
+              if(idx === 0) return '🏁 투자 시작 시점 ('+ targetDate.getFullYear() + '년 ' + (targetDate.getMonth()+1) + '월)';
+              return '📅 ' + targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월';
+            },
+            label: function(context) {
+              const idx = context.dataIndex;
+              const goalVal = origPath[idx] || 0;
+              const actVal = actualData[idx];
+              
+              if(context.dataset.type === 'line') {
+                let note = '';
+                if(idx > 0 && idx <= (goal.delayMonths || 0)) {
+                  note = ' (납입 대기 구간)';
+                }
+                return '• 목표 금액: ' + fmtKoreanUnit(goalVal) + note;
+              } else {
+                if(actVal === null || actVal === undefined) return '• 실제 금액: 기록 없음';
+                const diffVal = actVal - goalVal;
+                const progress = goalVal > 0 ? ((actVal / goalVal) * 100).toFixed(1) : '0.0';
+                const diffStr = diffVal >= 0 ? '+' + fmtKoreanUnit(diffVal) : '-' + fmtKoreanUnit(Math.abs(diffVal));
+                
+                return [
+                  '• 실제 금액: ' + fmtKoreanUnit(actVal),
+                  '• 차액 표시: ' + diffStr,
+                  '• 목표 대비 달성률: ' + progress + '%'
+                ];
+              }
+            }
+          }
+        }
+      },
+      scales:{
+        x:{
+          grid:{color:'rgba(255,255,255,0.05)'},
+          ticks:{color:'#555a72',font:{size:10},maxRotation:0,autoSkip:false}
+        },
+        y:{
+          grid:{color:'rgba(255,255,255,0.05)'},
+          ticks:{
+            color:'#555a72',
+            font:{size:10},
+            callback: function(value) {
+              if (value === 0) return '0';
+              if (value >= 100000000) return (value / 100000000).toFixed(1).replace('.0', '') + '억';
+              if (value >= 10000) return (value / 10000).toLocaleString() + '만';
+              return value;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderHistory(){
+  const data=load();
+  const months=data.months||[];
+  const listEl=document.getElementById('history-list');
+  const emptyEl=document.getElementById('history-empty');
+  if(months.length===0){emptyEl.style.display='block';listEl.innerHTML='';return;}
+  emptyEl.style.display='none';
+  listEl.innerHTML=[...months].reverse().map((m,ri)=>{
+    const idx=months.length-1-ri;
+    const rc=m.rate>0?'pos':m.rate<0?'neg':'zero';
+    const rs=m.rate>0?'+':'';
+    return`<div class="history-item">
+      <div class="hi-left">
+        <div class="hi-date">${m.date}</div>
+        <div class="hi-invest">${m.invest===0?'추가 납입 없음':'+'+fmtExactRaw(m.invest)}</div>
+      </div>
+      <div class="hi-right">
+        <div class="hi-rate ${rc}">${rs}${m.rate.toFixed(1)}%</div>
+        <div class="hi-actions">
+          <button class="btn-secondary" onclick="editEntry(${idx})">✏️ 수정</button>
+          <button class="btn-secondary" onclick="deleteEntry(${idx})">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+initDateSelects();
+updateGoalDisplay();
+renderDashboard();
+</script>
+</body>
+</html>
